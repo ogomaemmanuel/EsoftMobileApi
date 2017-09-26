@@ -494,6 +494,7 @@
     <Compile Include="SaccoLink_ReverseTransactions_Result.cs">
       <DependentUpon>EsoftMobile.tt</DependentUpon>
     </Compile>
+    <Compile Include="Services\common\ExtensionMethods.cs" />
     <Compile Include="Services\common\ValueConverters.cs" />
     <Compile Include="Services\CustomerAccountsManager.cs" />
     <Compile Include="Single_Customer_Status_deposits_Result.cs">

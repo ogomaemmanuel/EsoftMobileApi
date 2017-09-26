@@ -14,7 +14,9 @@ namespace EsoftMobileApi.Controllers
     public class CustomerController : ApiController
     {
         Esoft_WebEntities _esoftWebEntities;
+
         private CustomerAccountsManager customerAccountsManager;
+
         public CustomerController()
         {
             _esoftWebEntities = new Esoft_WebEntities();
@@ -26,8 +28,9 @@ namespace EsoftMobileApi.Controllers
         public tbl_Customer GetCustomer(Guid id)
         {
             tbl_Customer customer = CustomerDetails(id);
-            return  customer;
+            return customer;
         }
+
         [Route("customers/{id}/savings"), HttpGet]
         public List<AccountDetails> GetSavingBalances(Guid id)
         {
@@ -35,24 +38,48 @@ namespace EsoftMobileApi.Controllers
             List<AccountDetails> acccountDetails = customerAccountsManager.GetSavingsAccountBalances(customer.CustomerNo);
             return acccountDetails;
         }
+
         [Route("customers/{id}/shares"), HttpGet]
         public List<AccountDetails> GetShareBalances(Guid id)
         {
+            if (string.IsNullOrWhiteSpace(id.ToString()))
+            {
+                return new List<AccountDetails>();
+            }
+
             tbl_Customer customer = CustomerDetails(id);
-            return null;
+
+            List<AccountDetails> accountsDetails
+                = customerAccountsManager.CustomerShareBalances(customer.CustomerNo);
+
+            return accountsDetails;
         }
 
         [Route("customers/{id}/loans"), HttpGet]
         public List<AccountDetails> GetLoansBalances(Guid id)
         {
+            if (string.IsNullOrWhiteSpace(id.ToString()))
+            {
+                return new List<AccountDetails>();
+            }
+
             tbl_Customer customer = CustomerDetails(id);
-            return null;
+
+            List<AccountDetails> accountsDetails
+                = customerAccountsManager.CustomerLoanBalances(customer.CustomerNo);
+
+            return accountsDetails;
         }
-        //public
 
         private tbl_Customer CustomerDetails(Guid id)
         {
-            tbl_Customer customer = _esoftWebEntities.tbl_Customer.Where(x => x.tbl_CustomerID == id).Select(x => x).FirstOrDefault();
+            tbl_Customer customer = new tbl_Customer();
+
+            if (!string.IsNullOrWhiteSpace(id.ToString()))
+            {
+                customer = _esoftWebEntities.tbl_Customer.Where(x => x.tbl_CustomerID == id).Select(x => x).FirstOrDefault();
+
+            }
             return customer;
         }
     }
