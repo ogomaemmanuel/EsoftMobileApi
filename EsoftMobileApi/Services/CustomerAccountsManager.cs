@@ -20,7 +20,7 @@ namespace ESoft.Web.Services.Registry
 
         }
 
-        private List<tbl_CustomerAccounts> GetCustomerSavingsAccounts(String customerNo)
+        public List<tbl_CustomerAccounts> GetCustomerSavingsAccounts(String customerNo)
         {
             List<tbl_CustomerAccounts> accounts = mainDb.tbl_CustomerAccounts.Where(x => (x.CustomerNo ?? String.Empty) == (customerNo ?? String.Empty)).OrderBy(x => x.AccountNo).Select(x => x).ToList();
             return accounts;
@@ -79,6 +79,7 @@ namespace ESoft.Web.Services.Registry
                     {
                         ProductType = "INVESTMENTS",
                         ProductCode = item.InvestmentCode,
+                        AccountNo = item.PrincipalAccount,
                         ProductName = item.InvestmentName.Trim() + ": " + item.InvestmentCode.Trim()
 
                     });
@@ -98,7 +99,7 @@ namespace ESoft.Web.Services.Registry
                     {
                         ProductType = "LOANS",
                         ProductCode = item.LoanCode,
-                        ProductName = loanName
+                        ProductName = loanName,
                     });
                 }
             }
@@ -115,7 +116,8 @@ namespace ESoft.Web.Services.Registry
                     {
                         ProductType = "LOANS",
                         ProductCode = item.Ttype,
-                        ProductName = item.ProductName.Trim() + ": " + item.Ttype
+                        ProductName = item.ProductName.Trim() + ": " + item.Ttype,
+                        AccountNo = item.AccountNo
                     });
                 }
             }
@@ -320,6 +322,22 @@ namespace ESoft.Web.Services.Registry
             return productName;
         }
 
+
+        public List<tbl_accounttypes> GetAccountTypes()
+        {
+            List<tbl_accounttypes> accountTypes = new List<tbl_accounttypes>();
+
+            try
+            {
+                accountTypes = mainDb.tbl_accounttypes.ToList();
+            }
+            catch (Exception ex)
+            {
+                //log error;
+            }
+
+            return accountTypes;
+        }
     }
 
 }

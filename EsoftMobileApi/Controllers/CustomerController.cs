@@ -71,6 +71,79 @@ namespace EsoftMobileApi.Controllers
             return accountsDetails;
         }
 
+        [Route("customers/{id}/savings-accounts"), HttpGet]
+        public List<ProductsView> GetSavingsAccounts(Guid id)
+        {
+            if (string.IsNullOrWhiteSpace(id.ToString()))
+            {
+                return new List<ProductsView>();
+            }
+
+            tbl_Customer customer = CustomerDetails(id);
+
+            List<tbl_CustomerAccounts> accounts = customerAccountsManager.GetCustomerSavingsAccounts(customer.CustomerNo);
+            List<tbl_accounttypes> accountTypes = customerAccountsManager.GetAccountTypes();
+
+            List<ProductsView> savingsAccounts = (from account in accounts
+                                                  join types in accountTypes on account.AccountType equals types.code
+                                                  select new ProductsView
+                                                  {
+                                                      ProductCode = types.act_code,
+                                                      ProductName = types.category,
+                                                      AccountNo = account.AccountNo,
+                                                      Balance = 0,
+                                                  }).ToList();
+            return savingsAccounts;
+        }
+
+        [Route("customers/{id}/loans-accounts"), HttpGet]
+        public List<ProductsView> GetLoansAccounts(Guid id)
+        {
+            if (string.IsNullOrWhiteSpace(id.ToString()))
+            {
+                return new List<ProductsView>();
+            }
+
+            tbl_Customer customer = CustomerDetails(id);
+
+            List<ProductsView> products = customerAccountsManager.GetCustomerProducts(
+                new List<ProductsView>(),
+                customer.CustomerNo,
+               new List<CustomerBalances>());
+
+            products = products.Where(x => x.ProductType == "LOANS").ToList();
+
+            return products;
+        }
+
+        [Route("customers/{id}/shares-accounts"), HttpGet]
+        public List<ProductsView> GetSharesAccounts(Guid id)
+        {
+            if (string.IsNullOrWhiteSpace(id.ToString()))
+            {
+                return new List<ProductsView>();
+            }
+
+            tbl_Customer customer = CustomerDetails(id);
+
+            List<ProductsView> products = customerAccountsManager.GetCustomerProducts(
+                new List<ProductsView>(),
+                customer.CustomerNo,
+               new List<CustomerBalances>());
+
+            products = products.Where(x => x.ProductType == "INVESTMENTS").ToList();
+
+            return products;
+        }
+
+
+        [Route("customers/{id}/statement/{account}"), HttpGet]
+        public List<CustomerSavingsStatementViewModel> GetSavingsStatement(Guid id)
+        {
+            tbl_Customer customer = CustomerDetails(id);
+            return new List<CustomerSavingsStatementViewModel>();
+        }
+
         private tbl_Customer CustomerDetails(Guid id)
         {
             tbl_Customer customer = new tbl_Customer();
