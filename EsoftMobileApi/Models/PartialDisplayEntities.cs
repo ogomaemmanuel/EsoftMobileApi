@@ -133,4 +133,11 @@ namespace EsoftMobileApi.Models
         public string LoginName { get; set; }
         public string DOCID { get; set; }
     }
+
+    public class Statement
+    {
+        public string ReferenceNo { get; set; }
+        public DateTime? TransactionDate { get; set; }
+        public decimal Amount { get; set; }
+    }
 }

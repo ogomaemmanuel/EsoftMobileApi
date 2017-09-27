@@ -136,13 +136,27 @@ namespace EsoftMobileApi.Controllers
             return products;
         }
 
-
-        [Route("customers/{id}/statement/{account}"), HttpGet]
-        public List<CustomerSavingsStatementViewModel> GetSavingsStatement(Guid id)
+        [Route("customers/{id}/savings-statement/{account}"), HttpGet]
+        public List<CustomerSavingsStatementViewModel> GetSavingsStatement(Guid id, string account)
         {
             tbl_Customer customer = CustomerDetails(id);
+
+            List<CustomerSavings> savings = customerAccountsManager.GetCustomerSavings(account)
+                .OrderBy(x => x.TransactionDate)
+                .Take(5)
+                .ToList();
+
+            List<Statement> statement = (from saving in savings
+                                         select new Statement
+                                         {
+                                             ReferenceNo = saving.ReferenceNo,
+                                             TransactionDate = saving.TransactionDate,
+                                             Amount = (saving.DEBIT - saving.CREDIT) ?? 0
+                                         }).ToList();
+
             return new List<CustomerSavingsStatementViewModel>();
         }
+
 
         private tbl_Customer CustomerDetails(Guid id)
         {
