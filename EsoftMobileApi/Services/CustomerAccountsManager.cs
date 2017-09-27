@@ -79,7 +79,7 @@ namespace ESoft.Web.Services.Registry
                     {
                         ProductType = "INVESTMENTS",
                         ProductCode = item.InvestmentCode,
-                        AccountNo = item.PrincipalAccount,
+                        AccountNo = item.InvestmentCode,
                         ProductName = item.InvestmentName.Trim() + ": " + item.InvestmentCode.Trim()
 
                     });
@@ -100,6 +100,7 @@ namespace ESoft.Web.Services.Registry
                         ProductType = "LOANS",
                         ProductCode = item.LoanCode,
                         ProductName = loanName,
+                        AccountNo = item.LoanCode
                     });
                 }
             }
@@ -215,7 +216,7 @@ namespace ESoft.Web.Services.Registry
             return accountsDetails;
         }
 
-        private List<CustomerLoanStatementViewModel> GetSingleLoanStatement(List<CustomerLoanStatementViewModel> loanStatement,
+        public List<CustomerLoanStatementViewModel> GetSingleLoanStatement(List<CustomerLoanStatementViewModel> loanStatement,
                 string customerno, string loanCode, DateTime? startDate = null, DateTime? endDate = null,
                 string combinedRepayments = "")
         {

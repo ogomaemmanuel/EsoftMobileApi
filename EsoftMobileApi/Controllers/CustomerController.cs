@@ -137,12 +137,13 @@ namespace EsoftMobileApi.Controllers
         }
 
         [Route("customers/{id}/savings-statement/{account}"), HttpGet]
-        public List<CustomerSavingsStatementViewModel> GetSavingsStatement(Guid id, string account)
+        public List<Statement> GetSavingsStatement(Guid id, string account)
         {
             tbl_Customer customer = CustomerDetails(id);
 
             List<CustomerSavings> savings = customerAccountsManager.GetCustomerSavings(account)
                 .OrderBy(x => x.TransactionDate)
+                .ThenByDescending(x => x.TransactionDate)
                 .Take(5)
                 .ToList();
 
@@ -154,9 +155,38 @@ namespace EsoftMobileApi.Controllers
                                              Amount = (saving.DEBIT - saving.CREDIT) ?? 0
                                          }).ToList();
 
-            return new List<CustomerSavingsStatementViewModel>();
+            return statement;
         }
 
+        [Route("customers/{id}/loans-statement/{account}"), HttpGet]
+        public List<Statement> GetLoansStatement(Guid id, string account)
+        {
+            List<Statement> statement = new List<Statement>();
+
+            tbl_Customer customer = CustomerDetails(id);
+
+            DateTime startDate = new DateTime(1990, 1, 1);
+            DateTime endDate = DateTime.Now;
+
+            List<CustomerLoanStatementViewModel> statements = customerAccountsManager.GetSingleLoanStatement(
+                new List<CustomerLoanStatementViewModel>(),
+                customer.CustomerNo,
+                account,
+                startDate, endDate
+                ).OrderBy(x => x.TransactionDate)
+                .ThenByDescending(x => x.TransactionDate)
+                .Take(5).ToList();
+
+            statement = (from sstatement in statements
+                         select new Statement
+                         {
+                             ReferenceNo = sstatement.ReferenceNo,
+                             TransactionDate = sstatement.TransactionDate,
+                             Amount = (sstatement.Debit - sstatement.Credit)
+                         }).ToList();
+
+            return statement;
+        }
 
         private tbl_Customer CustomerDetails(Guid id)
         {
@@ -170,8 +200,4 @@ namespace EsoftMobileApi.Controllers
             return customer;
         }
     }
-
-
-
-
 }
