@@ -88,9 +88,9 @@ namespace EsoftMobileApi.Controllers
                                                   join types in accountTypes on account.AccountType equals types.code
                                                   select new ProductsView
                                                   {
-                                                      ProductCode = types.act_code,
-                                                      ProductName = types.category,
-                                                      AccountNo = account.AccountNo,
+                                                      ProductCode = (types.act_code ?? string.Empty).Trim(),
+                                                      ProductName = (types.category ?? string.Empty).Trim(),
+                                                      AccountNo = (account.AccountNo ?? string.Empty).Trim(),
                                                       Balance = 0,
                                                   }).ToList();
             return savingsAccounts;

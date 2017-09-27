@@ -78,8 +78,8 @@ namespace ESoft.Web.Services.Registry
                     customerProducts.Add(new ProductsView
                     {
                         ProductType = "INVESTMENTS",
-                        ProductCode = item.InvestmentCode,
-                        AccountNo = item.InvestmentCode,
+                        ProductCode = (item.InvestmentCode ?? string.Empty).Trim(),
+                        AccountNo = (item.InvestmentCode ?? string.Empty).Trim(),
                         ProductName = item.InvestmentName.Trim() + ": " + item.InvestmentCode.Trim()
 
                     });
@@ -98,9 +98,9 @@ namespace ESoft.Web.Services.Registry
                     customerProducts.Add(new ProductsView
                     {
                         ProductType = "LOANS",
-                        ProductCode = item.LoanCode,
-                        ProductName = loanName,
-                        AccountNo = item.LoanCode
+                        ProductCode = (item.LoanCode ?? string.Empty).Trim(),
+                        ProductName = (loanName ?? string.Empty).Trim(),
+                        AccountNo = (item.LoanCode ?? string.Empty).Trim()
                     });
                 }
             }
@@ -116,9 +116,9 @@ namespace ESoft.Web.Services.Registry
                     customerProducts.Add(new ProductsView
                     {
                         ProductType = "LOANS",
-                        ProductCode = item.Ttype,
-                        ProductName = item.ProductName.Trim() + ": " + item.Ttype,
-                        AccountNo = item.AccountNo
+                        ProductCode = (item.Ttype ?? string.Empty).Trim(),
+                        ProductName = item.ProductName.Trim() + ": " + (item.Ttype ?? string.Empty).Trim(),
+                        AccountNo = (item.AccountNo ?? string.Empty).Trim()
                     });
                 }
             }
