@@ -271,7 +271,7 @@ namespace ESoft.Web.Services.Registry
             return loanStatement;
         }
 
-        private List<CustomerInvestmentStatementViewModel> GetSingleInvestmentStatement(List<CustomerInvestmentStatementViewModel> investmentStatement,
+        public List<CustomerInvestmentStatementViewModel> GetSingleInvestmentStatement(List<CustomerInvestmentStatementViewModel> investmentStatement,
             string customerno, string investmentCode, DateTime? startDate = null, DateTime? endDate = null)
         {
             if (investmentStatement == null) investmentStatement = new List<CustomerInvestmentStatementViewModel>();

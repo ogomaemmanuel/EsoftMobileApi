@@ -188,6 +188,36 @@ namespace EsoftMobileApi.Controllers
             return statement;
         }
 
+        [Route("customers/{id}/shares-statement/{account}"), HttpGet]
+        public List<Statement> GetSharesStatement(Guid id, string account)
+        {
+            List<Statement> statement = new List<Statement>();
+
+            tbl_Customer customer = CustomerDetails(id);
+
+            DateTime startDate = new DateTime(1990, 1, 1);
+            DateTime endDate = DateTime.Now;
+
+            List<CustomerInvestmentStatementViewModel> statements = customerAccountsManager.GetSingleInvestmentStatement(
+                new List<CustomerInvestmentStatementViewModel>(),
+                customer.CustomerNo,
+                account,
+                startDate, endDate
+                ).OrderBy(x => x.TransactionDate)
+                .ThenByDescending(x => x.TransactionDate)
+                .Take(5).ToList();
+
+            statement = (from sstatement in statements
+                         select new Statement
+                         {
+                             ReferenceNo = sstatement.ReferenceNo,
+                             TransactionDate = sstatement.TransactionDate,
+                             Amount = (sstatement.Debit - sstatement.Credit)
+                         }).ToList();
+
+            return statement;
+        }
+
         private tbl_Customer CustomerDetails(Guid id)
         {
             tbl_Customer customer = new tbl_Customer();
