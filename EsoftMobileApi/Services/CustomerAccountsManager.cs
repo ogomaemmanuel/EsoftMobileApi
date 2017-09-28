@@ -340,16 +340,34 @@ namespace ESoft.Web.Services.Registry
             return accountTypes;
         }
 
-        public List<tbl_LinkedAtmCards> GetLinkedAtmCards(string customerNo, List<tbl_LinkedAtmCards> linkedAtms)
+        public List<LinkedAtmCards> GetLinkedAtmCards(string customerNo, List<LinkedAtmCards> linkedAtms)
         {
-            linkedAtms = linkedAtms == null ? new List<tbl_LinkedAtmCards>() : linkedAtms;
+            linkedAtms = linkedAtms == null ? new List<LinkedAtmCards>() : linkedAtms;
 
             try
             {
-                var cards = (from atmCards in mainDb.tbl_LinkedAtmCards
-                             join custAccounts in mainDb.tbl_CustomerAccounts on atmCards.AccountNo equals custAccounts.AccountNo
-                             where custAccounts.CustomerNo == customerNo
-                             select atmCards).ToList();
+                List<LinkedAtmCards> cards = (from atmCards in mainDb.tbl_LinkedAtmCards
+                                              join custAccounts in mainDb.tbl_CustomerAccounts on
+                                              atmCards.AccountNo equals custAccounts.AccountNo
+                                              where custAccounts.CustomerNo == customerNo
+                                              join branches in mainDb.BranchSettings on atmCards.Branch equals branches.BranchCode
+                                              select new LinkedAtmCards
+                                              {
+                                                  recno = atmCards.recno,
+                                                  AccountNo = atmCards.AccountNo,
+                                                  CardNumber = atmCards.CardNumber,
+                                                  Branch = atmCards.Branch,
+                                                  BranchName = branches.Name,
+                                                  Enabled = atmCards.Enabled,
+                                                  DateLinked = atmCards.DateLinked,
+                                                  LinkedBy = atmCards.LinkedBy,
+                                                  verify = atmCards.verify,
+                                                  AttachBy = atmCards.AttachBy,
+                                                  verifyBy = atmCards.verifyBy,
+                                                  tbl_LinkedAtmCardsID = atmCards.tbl_LinkedAtmCardsID
+                                              }).ToList();
+
+
 
                 linkedAtms.AddRange(cards);
             }

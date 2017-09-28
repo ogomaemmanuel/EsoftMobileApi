@@ -140,4 +140,21 @@ namespace EsoftMobileApi.Models
         public DateTime? TransactionDate { get; set; }
         public decimal Amount { get; set; }
     }
+
+    public class LinkedAtmCards
+    {
+        public long recno { get; set; }
+        public string AccountNo { get; set; }
+        public string CardNumber { get; set; }
+        public string Branch { get; set; }
+        public string BranchName { get; set; }
+        public decimal Enabled { get; set; }
+        public DateTime DateLinked { get; set; }
+        public string LinkedBy { get; set; }
+        public decimal? verify { get; set; }
+        public string AttachBy { get; set; }
+        public string verifyBy { get; set; }
+        public Guid tbl_LinkedAtmCardsID { get; set; }
+    }
+
 }

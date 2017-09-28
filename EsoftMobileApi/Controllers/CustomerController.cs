@@ -219,9 +219,9 @@ namespace EsoftMobileApi.Controllers
         }
 
         [Route("customers/{id}/atm-cards"), HttpGet]
-        public List<tbl_LinkedAtmCards> GetAtmCards(Guid id)
+        public List<LinkedAtmCards> GetAtmCards(Guid id)
         {
-            List<tbl_LinkedAtmCards> atm_cards = new List<tbl_LinkedAtmCards>();
+            List<LinkedAtmCards> atm_cards = new List<LinkedAtmCards>();
 
             tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
 
