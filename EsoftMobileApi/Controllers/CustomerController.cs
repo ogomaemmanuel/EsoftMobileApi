@@ -13,13 +13,13 @@ namespace EsoftMobileApi.Controllers
     [EnableCors(origins: "http://localhost:8100", headers: "*", methods: "*")]
     public class CustomerController : ApiController
     {
-        Esoft_WebEntities _esoftWebEntities;
+        Esoft_WebEntities mainDb;
 
         private CustomerAccountsManager customerAccountsManager;
 
         public CustomerController()
         {
-            _esoftWebEntities = new Esoft_WebEntities();
+            mainDb = new Esoft_WebEntities();
             customerAccountsManager = new CustomerAccountsManager();
 
         }
@@ -27,14 +27,14 @@ namespace EsoftMobileApi.Controllers
         [Route("customers/{id}"), HttpGet]
         public tbl_Customer GetCustomer(Guid id)
         {
-            tbl_Customer customer = CustomerDetails(id);
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
             return customer;
         }
 
         [Route("customers/{id}/savings"), HttpGet]
         public List<AccountDetails> GetSavingBalances(Guid id)
         {
-            tbl_Customer customer = CustomerDetails(id);
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
             List<AccountDetails> acccountDetails = customerAccountsManager.GetSavingsAccountBalances(customer.CustomerNo);
             return acccountDetails;
         }
@@ -47,7 +47,7 @@ namespace EsoftMobileApi.Controllers
                 return new List<AccountDetails>();
             }
 
-            tbl_Customer customer = CustomerDetails(id);
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
 
             List<AccountDetails> accountsDetails
                 = customerAccountsManager.CustomerShareBalances(customer.CustomerNo);
@@ -63,7 +63,7 @@ namespace EsoftMobileApi.Controllers
                 return new List<AccountDetails>();
             }
 
-            tbl_Customer customer = CustomerDetails(id);
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
 
             List<AccountDetails> accountsDetails
                 = customerAccountsManager.CustomerLoanBalances(customer.CustomerNo);
@@ -79,7 +79,7 @@ namespace EsoftMobileApi.Controllers
                 return new List<ProductsView>();
             }
 
-            tbl_Customer customer = CustomerDetails(id);
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
 
             List<tbl_CustomerAccounts> accounts = customerAccountsManager.GetCustomerSavingsAccounts(customer.CustomerNo);
             List<tbl_accounttypes> accountTypes = customerAccountsManager.GetAccountTypes();
@@ -104,7 +104,7 @@ namespace EsoftMobileApi.Controllers
                 return new List<ProductsView>();
             }
 
-            tbl_Customer customer = CustomerDetails(id);
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
 
             List<ProductsView> products = customerAccountsManager.GetCustomerProducts(
                 new List<ProductsView>(),
@@ -124,7 +124,7 @@ namespace EsoftMobileApi.Controllers
                 return new List<ProductsView>();
             }
 
-            tbl_Customer customer = CustomerDetails(id);
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
 
             List<ProductsView> products = customerAccountsManager.GetCustomerProducts(
                 new List<ProductsView>(),
@@ -139,7 +139,7 @@ namespace EsoftMobileApi.Controllers
         [Route("customers/{id}/savings-statement/{account}"), HttpGet]
         public List<Statement> GetSavingsStatement(Guid id, string account)
         {
-            tbl_Customer customer = CustomerDetails(id);
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
 
             List<CustomerSavings> savings = customerAccountsManager.GetCustomerSavings(account)
                 .OrderBy(x => x.TransactionDate)
@@ -163,7 +163,7 @@ namespace EsoftMobileApi.Controllers
         {
             List<Statement> statement = new List<Statement>();
 
-            tbl_Customer customer = CustomerDetails(id);
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
 
             DateTime startDate = new DateTime(1990, 1, 1);
             DateTime endDate = DateTime.Now;
@@ -193,7 +193,7 @@ namespace EsoftMobileApi.Controllers
         {
             List<Statement> statement = new List<Statement>();
 
-            tbl_Customer customer = CustomerDetails(id);
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
 
             DateTime startDate = new DateTime(1990, 1, 1);
             DateTime endDate = DateTime.Now;
@@ -218,16 +218,15 @@ namespace EsoftMobileApi.Controllers
             return statement;
         }
 
-        private tbl_Customer CustomerDetails(Guid id)
+        [Route("customers/{id}/atm-cards"), HttpGet]
+        public List<tbl_LinkedAtmCards> GetAtmCards(Guid id)
         {
-            tbl_Customer customer = new tbl_Customer();
+            List<tbl_LinkedAtmCards> atm_cards = new List<tbl_LinkedAtmCards>();
 
-            if (!string.IsNullOrWhiteSpace(id.ToString()))
-            {
-                customer = _esoftWebEntities.tbl_Customer.Where(x => x.tbl_CustomerID == id).Select(x => x).FirstOrDefault();
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
 
-            }
-            return customer;
+            return atm_cards;
         }
+
     }
 }

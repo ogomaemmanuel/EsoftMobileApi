@@ -339,6 +339,45 @@ namespace ESoft.Web.Services.Registry
 
             return accountTypes;
         }
+
+        public List<tbl_LinkedAtmCards> GetLinkedAtmCards(string customerNo, List<tbl_LinkedAtmCards> linkedAtms)
+        {
+            linkedAtms = linkedAtms == null ? new List<tbl_LinkedAtmCards>() : linkedAtms;
+
+            try
+            {
+                var cards = (from atmCards in mainDb.tbl_LinkedAtmCards
+                             join custAccounts in mainDb.tbl_CustomerAccounts on atmCards.AccountNo equals custAccounts.AccountNo
+                             where custAccounts.CustomerNo == customerNo
+                             select atmCards).ToList();
+
+                linkedAtms.AddRange(cards);
+            }
+            catch (Exception ex)
+            {
+                //Utility.WriteErrorLog("GetLinkedAtmCards", ref ex);
+            }
+
+            for (int i = 0; i < linkedAtms.Count(); i++)
+            {
+                linkedAtms[i].CardNumber = ValueConverters.FormatAtmCardNumber(linkedAtms[i].CardNumber);
+            }
+
+            return linkedAtms;
+        }
+
+
+        public tbl_Customer CustomerDetails(Guid id)
+        {
+            tbl_Customer customer = new tbl_Customer();
+
+            if (!string.IsNullOrWhiteSpace(id.ToString()))
+            {
+                customer = mainDb.tbl_Customer.Where(x => x.tbl_CustomerID == id).Select(x => x).FirstOrDefault();
+
+            }
+            return customer;
+        }
     }
 
 }
