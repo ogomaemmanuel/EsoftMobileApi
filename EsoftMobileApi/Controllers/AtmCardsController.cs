@@ -28,7 +28,7 @@ namespace EsoftMobileApi.Controllers
         {
             bool result = false;
 
-            if (string.IsNullOrEmpty(id.ToString()))
+            if (!string.IsNullOrEmpty(id.ToString()))
             {
                 tbl_Customer customer = customerAccountsManager.CustomerDetails(customerId);
 
