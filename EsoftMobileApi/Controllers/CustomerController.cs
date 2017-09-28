@@ -230,5 +230,7 @@ namespace EsoftMobileApi.Controllers
             return atm_cards;
         }
 
+     
+
     }
 }

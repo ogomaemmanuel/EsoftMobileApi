@@ -266,6 +266,7 @@
       <DependentUpon>EsoftMobile.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AtmCardsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
@@ -494,6 +495,7 @@
     <Compile Include="SaccoLink_ReverseTransactions_Result.cs">
       <DependentUpon>EsoftMobile.tt</DependentUpon>
     </Compile>
+    <Compile Include="Services\AtmCardsManager.cs" />
     <Compile Include="Services\common\ExtensionMethods.cs" />
     <Compile Include="Services\common\ValueConverters.cs" />
     <Compile Include="Services\CustomerAccountsManager.cs" />
@@ -1198,6 +1200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\AtmCards\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
