@@ -225,6 +225,8 @@ namespace EsoftMobileApi.Controllers
 
             tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
 
+            atm_cards = customerAccountsManager.GetLinkedAtmCards(customer.CustomerNo, atm_cards);
+
             return atm_cards;
         }
 
