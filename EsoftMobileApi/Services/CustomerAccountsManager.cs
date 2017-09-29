@@ -396,6 +396,37 @@ namespace ESoft.Web.Services.Registry
             }
             return customer;
         }
+
+        public bool RegisterMobileUser(MobileUsers user)
+        {
+            bool insertResult = false;
+
+            try
+            {
+                string insertMobileUser = "INSERT INTO tbl_MobileUsers(CustomerName,MobileNo,Pin,tbl_CustomerId,CustomerNo,Email,Enabled) " +
+                     " VALUES(" + user.CustomerName.Format_Sql_String() + "','" +
+                     user.MobileNo.Format_Sql_String() + "','" +
+                     user.Pin + "','" +
+                     user.tbl_CustomerId + "','" +
+                     user.CustomerNo.Format_Sql_String() + "','" +
+                     user.Email.Format_Sql_String() + "" +
+                     ValueConverters.ConvertNullToBool(user.Enabled) + "'); ";
+
+                DbDataReader reader = DbConnector.GetSqlReader(insertMobileUser);
+
+                if (reader.RecordsAffected > 0)
+                {
+                    insertResult = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                //log ex
+            }
+
+            return insertResult;
+        }
     }
 
 }

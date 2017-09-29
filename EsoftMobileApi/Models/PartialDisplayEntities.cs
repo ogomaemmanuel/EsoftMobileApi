@@ -157,4 +157,17 @@ namespace EsoftMobileApi.Models
         public Guid tbl_LinkedAtmCardsID { get; set; }
     }
 
+    public class MobileUsers
+    {
+        public int Id { get; set; }
+        public string CustomerName { get; set; }
+        public string MobileNo { get; set; }
+        public int Pin { get; set; }
+        public Guid tbl_CustomerId { get; set; }
+        public string CustomerNo { get; set; }
+        public string Email { get; set; }
+        public bool? Enabled { get; set; }
+    }
+
+
 }

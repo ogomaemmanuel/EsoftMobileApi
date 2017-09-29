@@ -230,7 +230,16 @@ namespace EsoftMobileApi.Controllers
             return atm_cards;
         }
 
-     
+        [Route("customers/register"), HttpPost]
+        public bool RegisterCustomer(MobileUsers user)
+        {
+            bool insertResult = false;
+
+            insertResult = customerAccountsManager.RegisterMobileUser(user);
+
+            return insertResult;
+        }
+
 
     }
 }
