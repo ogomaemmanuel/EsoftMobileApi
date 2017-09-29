@@ -36,9 +36,9 @@ namespace EsoftMobileApi.Services
                 //block it
                 string updateLinkProcess = "INSERT INTO tbl_LinkProcess(AccountNo,CardNumber,Branch,ENABLED,TransactionDate,LoginId,Narration,DOCID) " +
                      " VALUES('" + foundCard.AccountNo + "','" + foundCard.CardNumber + "','" + foundCard.Branch +
-                     "',5,GetDate(),'APP','Stopped ATM CARD :" + foundCard.CardNumber + "','" + docid + "');s ";
+                     "',5,GetDate(),'APP','Stopped ATM CARD :" + foundCard.CardNumber + "','" + docid + "'); ";
 
-                updateLinkProcess += "UPDATE tbl_LinkedAtmCards SET ENABLED=0,VERIFY=0 where tbl_LinkedAtmCardsId='" + foundCard.tbl_LinkedAtmCardsID.ToString() + "'";
+                updateLinkProcess += "UPDATE tbl_LinkedAtmCards SET ENABLED=0,VERIFY=0 where tbl_LinkedAtmCardsId='" + foundCard.tbl_LinkedAtmCardsID.ToString() + "';";
 
                 DbDataReader reader = DbConnector.GetSqlReader(updateLinkProcess);
 
