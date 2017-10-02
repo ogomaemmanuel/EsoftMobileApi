@@ -385,7 +385,7 @@ namespace ESoft.Web.Services.Registry
         }
 
 
-        public tbl_Customer CustomerDetails(Guid id)
+        public tbl_Customer CustomerDetails(Guid? id)
         {
             tbl_Customer customer = new tbl_Customer();
 
