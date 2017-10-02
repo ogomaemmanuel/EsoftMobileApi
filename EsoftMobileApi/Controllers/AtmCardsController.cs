@@ -24,11 +24,11 @@ namespace EsoftMobileApi.Controllers
         }
 
         [Route("AtmCards/block"), HttpPut]
-        public bool block([FromUri]Guid id, Guid customerId)
+        public bool block(Guid id, Guid ?customerId)
         {
             bool result = false;
 
-            if (!string.IsNullOrEmpty(id.ToString()))
+            if (string.IsNullOrEmpty(id.ToString()))
             {
                 tbl_Customer customer = customerAccountsManager.CustomerDetails(customerId);
 

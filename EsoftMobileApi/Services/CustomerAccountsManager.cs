@@ -278,8 +278,8 @@ namespace ESoft.Web.Services.Registry
             if (startDate == null) startDate = new DateTime(1900, 01, 01);
             if (endDate == null || endDate.Value.Year == 1900) endDate = DateTime.Now;
 
-            string sqlStatement = " Exec getcustomerInvestments_single '" + ValueConverters.format_sql_string(customerno) + "','" +
-                ValueConverters.format_sql_string(investmentCode) + "','" + ValueConverters.FormatSqlDate(startDate) + "','" + ValueConverters.FormatSqlDate(endDate, true) + "'";
+            string sqlStatement = " Exec getcustomerInvestments_single '" + customerno.Format_Sql_String() + "','" +
+                investmentCode.Format_Sql_String() + "','" + ValueConverters.FormatSqlDate(startDate) + "','" + ValueConverters.FormatSqlDate(endDate, true) + "'";
 
             try
             {
@@ -385,7 +385,7 @@ namespace ESoft.Web.Services.Registry
         }
 
 
-        public tbl_Customer CustomerDetails(Guid id)
+        public tbl_Customer CustomerDetails(Guid? id)
         {
             tbl_Customer customer = new tbl_Customer();
 
