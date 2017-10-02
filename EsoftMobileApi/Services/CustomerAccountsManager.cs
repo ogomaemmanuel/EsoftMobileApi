@@ -465,7 +465,6 @@ namespace ESoft.Web.Services.Registry
                     loginInfo.User = user;
                 }
 
-
             }
 
             return loginInfo;
@@ -489,6 +488,52 @@ namespace ESoft.Web.Services.Registry
             }
 
             return user;
+        }
+
+        public bool ActivateMobileUser(string idNo, string customerNo, string pin)
+        {
+            bool result = false;
+
+            if (!string.IsNullOrWhiteSpace(idNo) && !string.IsNullOrWhiteSpace(customerNo))
+            {
+                tbl_Customer customer = mainDb.tbl_Customer
+                            .Where(x => x.CustomerNo.Trim() == customerNo.Trim()
+                                  && x.CustomerIdNo.Trim() == idNo.Trim())
+                            .FirstOrDefault();
+
+                if (customer != null)
+                {
+                    result = ActivateUser(customer.tbl_CustomerID, customer.CustomerNo, pin);
+                }
+            }
+
+            return result;
+        }
+
+        private bool ActivateUser(Guid tbl_customer_id, string userMemberNo, string pinNumber)
+        {
+            bool activateStatus = false;
+
+            string updateLinkProcess = "UPDATE tbl_MobileUsers SET Pin='" +
+                pinNumber.Format_Sql_String() + "',tbl_CustomerId='" +
+                tbl_customer_id + "',Enabled='true' WHERE CustomerNo = '" + userMemberNo.Format_Sql_String() + "';";
+
+            try
+            {
+                int success = this.mainDb.Database.ExecuteSqlCommand(updateLinkProcess);
+
+                if (success >= 1)
+                {
+                    activateStatus = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                //log the exception
+                activateStatus = false;
+            }
+
+            return activateStatus;
         }
     }
 

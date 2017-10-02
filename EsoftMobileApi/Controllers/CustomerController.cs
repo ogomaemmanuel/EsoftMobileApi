@@ -240,7 +240,6 @@ namespace EsoftMobileApi.Controllers
             return insertResult;
         }
 
-
         [Route("customers/login"), HttpGet]
         public LoginInfo RegisterCustomer([FromUri]Login login)
         {
@@ -254,5 +253,21 @@ namespace EsoftMobileApi.Controllers
             return loginStatus;
         }
 
+        [Route("customers/activate"), HttpPut]
+        public bool ActivateCustomer(string idNo, string customerNo, string pin)
+        {
+            bool result = false;
+
+            if (!string.IsNullOrWhiteSpace(idNo) &&
+                !string.IsNullOrWhiteSpace(customerNo) &&
+                !string.IsNullOrWhiteSpace(pin)
+                )
+            {
+
+                result = customerAccountsManager.ActivateMobileUser(idNo, customerNo, pin);
+            }
+
+            return result;
+        }
     }
 }
