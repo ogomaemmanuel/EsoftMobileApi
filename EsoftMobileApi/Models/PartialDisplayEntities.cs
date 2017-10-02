@@ -162,7 +162,7 @@ namespace EsoftMobileApi.Models
         public string IdNo { get; set; }
         public string CustomerName { get; set; }
         public string MobileNo { get; set; }
-        public int Pin { get; set; }
+        public string Pin { get; set; }
         public Guid tbl_CustomerId { get; set; }
         public string CustomerNo { get; set; }
         public string Email { get; set; }

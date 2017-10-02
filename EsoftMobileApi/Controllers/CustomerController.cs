@@ -246,7 +246,10 @@ namespace EsoftMobileApi.Controllers
         {
             LoginInfo loginStatus = new LoginInfo();
 
-            loginStatus = customerAccountsManager.Login(login);
+            if (login != null)
+            {
+                loginStatus = customerAccountsManager.Login(login);
+            }
 
             return loginStatus;
         }

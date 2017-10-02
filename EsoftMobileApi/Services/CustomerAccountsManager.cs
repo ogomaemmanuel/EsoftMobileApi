@@ -439,29 +439,27 @@ namespace ESoft.Web.Services.Registry
             if (user == null)
             {
                 loginInfo.Message = "Account not found";
+                loginInfo.Status = "Failed";
                 loginInfo.User = null;
             }
             else
             {
 
-                if (user.tbl_CustomerId == Guid.Empty)
+                if (user.tbl_CustomerId == Guid.Empty || user.Enabled == false)
                 {
                     //account pending activation
                     loginInfo.Message = "Account pending activation";
+                    loginInfo.Status = "Failed";
                     loginInfo.User = null;
                 }
                 else if (user.Pin.ToString().Trim() != login.Pin.ToString().Trim())
                 {
                     //password not matching
                     loginInfo.Message = "Invalid account details";
+                    loginInfo.Status = "Failed";
                     loginInfo.User = null;
                 }
 
-                if (user.Enabled == false)
-                {
-                    loginInfo.Message = "Welcome";
-                    loginInfo.User = user;
-                }
             }
 
             return loginInfo;
