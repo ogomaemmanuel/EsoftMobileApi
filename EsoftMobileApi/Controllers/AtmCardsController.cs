@@ -24,7 +24,7 @@ namespace EsoftMobileApi.Controllers
         }
 
         [Route("AtmCards/block"), HttpPut]
-        public bool block(Guid id, Guid ?customerId)
+        public bool block([FromUri]Guid id, Guid customerId)
         {
             bool result = false;
 
