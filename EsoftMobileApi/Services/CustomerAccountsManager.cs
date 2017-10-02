@@ -411,10 +411,11 @@ namespace ESoft.Web.Services.Registry
                      user.CustomerNo.Format_Sql_String() + "','" +
                      user.Email.Format_Sql_String() + "" +
                      ValueConverters.ConvertNullToBool(user.Enabled) + "'); ";
+              
 
-                DbDataReader reader = DbConnector.GetSqlReader(insertMobileUser);
+                int result = mainDb.Database.ExecuteSqlCommand(insertMobileUser);
 
-                if (reader.RecordsAffected > 0)
+                if (result >= 1)
                 {
                     insertResult = true;
                 }

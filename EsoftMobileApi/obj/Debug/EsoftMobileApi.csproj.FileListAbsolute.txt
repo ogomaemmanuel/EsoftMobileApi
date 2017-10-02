@@ -127,6 +127,6 @@ C:\esoftMobileApi\EsoftMobileApi\bin\Microsoft.Owin.Security.Google.xml
 C:\esoftMobileApi\EsoftMobileApi\bin\Microsoft.Owin.Security.Twitter.xml
 C:\esoftMobileApi\EsoftMobileApi\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\esoftMobileApi\EsoftMobileApi\bin\System.Web.Http.Owin.xml
+C:\esoftMobileApi\EsoftMobileApi\obj\Debug\EsoftMobileApi.csprojResolveAssemblyReference.cache
 C:\esoftMobileApi\EsoftMobileApi\obj\Debug\EsoftMobileApi.dll
 C:\esoftMobileApi\EsoftMobileApi\obj\Debug\EsoftMobileApi.pdb
-C:\esoftMobileApi\EsoftMobileApi\obj\Debug\EsoftMobileApi.csprojResolveAssemblyReference.cache

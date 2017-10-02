@@ -231,7 +231,7 @@ namespace EsoftMobileApi.Controllers
         }
 
         [Route("customers/register"), HttpPost]
-        public bool RegisterCustomer(MobileUsers user)
+        public bool RegisterCustomer([FromUri] MobileUsers user)
         {
             bool insertResult = false;
 

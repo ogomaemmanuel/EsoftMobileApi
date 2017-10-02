@@ -40,11 +40,21 @@ namespace EsoftMobileApi.Services
 
                 updateLinkProcess += "UPDATE tbl_LinkedAtmCards SET ENABLED=0,VERIFY=0 where tbl_LinkedAtmCardsId='" + foundCard.tbl_LinkedAtmCardsID.ToString() + "';";
 
-                DbDataReader reader = DbConnector.GetSqlReader(updateLinkProcess);
-
-                if (reader.RecordsAffected > 0)
+                try
                 {
-                    blockingStatus = true;
+                    //DbDataReader reader = DbConnector.GetSqlReader(updateLinkProcess);
+
+                    int success = this.mainDb.Database.ExecuteSqlCommand(updateLinkProcess);
+
+                    if (success >= 1)
+                    {
+                        blockingStatus = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //log the exception
+                    blockingStatus = false;
                 }
 
             }
