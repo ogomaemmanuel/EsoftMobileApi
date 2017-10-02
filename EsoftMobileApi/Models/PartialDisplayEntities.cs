@@ -175,4 +175,11 @@ namespace EsoftMobileApi.Models
         public int Pin { get; set; }
     }
 
+    public class LoginInfo
+    {
+        public string Status { get; set; }
+        public string Message { get; set; }
+        public MobileUsers User { get; set; }
+    }
+
 }

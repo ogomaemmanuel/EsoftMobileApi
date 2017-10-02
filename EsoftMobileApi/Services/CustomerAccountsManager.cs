@@ -413,7 +413,6 @@ namespace ESoft.Web.Services.Registry
                      user.IdNo.Format_Sql_String() + "','" +
                      ValueConverters.ConvertNullToBool(user.Enabled) + "'); ";
 
-
                 int result = mainDb.Database.ExecuteSqlCommand(insertMobileUser);
 
                 if (result >= 1)
@@ -428,6 +427,64 @@ namespace ESoft.Web.Services.Registry
             }
 
             return insertResult;
+        }
+
+        public LoginInfo Login(Login login)
+        {
+            LoginInfo loginInfo = new LoginInfo();
+
+            MobileUsers user = FindMobileAccount(login.MobileNo);
+
+            //No user was found
+            if (user == null)
+            {
+                loginInfo.Message = "Account not found";
+                loginInfo.User = null;
+            }
+            else
+            {
+
+                if (user.tbl_CustomerId == Guid.Empty)
+                {
+                    //account pending activation
+                    loginInfo.Message = "Account pending activation";
+                    loginInfo.User = null;
+                }
+                else if (user.Pin.ToString().Trim() != login.Pin.ToString().Trim())
+                {
+                    //password not matching
+                    loginInfo.Message = "Invalid account details";
+                    loginInfo.User = null;
+                }
+
+                if (user.Enabled == false)
+                {
+                    loginInfo.Message = "Welcome";
+                    loginInfo.User = user;
+                }
+            }
+
+            return loginInfo;
+        }
+
+        private MobileUsers FindMobileAccount(string mobileNo)
+        {
+            MobileUsers user = new MobileUsers();
+
+            try
+            {
+                String query = @"SELECT CustomerName,MobileNo,Pin,IdNo,tbl_CustomerId,
+                                CustomerNo,Email,Enabled,DateCreated 
+                                FROM tbl_MobileUsers WHERE MobileNo = " + mobileNo.Format_Sql_String() + " ;";
+
+                user = this.mainDb.Database.SqlQuery<MobileUsers>(query).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                //LOG ex
+            }
+
+            return user;
         }
     }
 

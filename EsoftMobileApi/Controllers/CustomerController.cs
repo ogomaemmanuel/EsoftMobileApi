@@ -241,5 +241,15 @@ namespace EsoftMobileApi.Controllers
         }
 
 
+        [Route("customers/login"), HttpPost]
+        public LoginInfo RegisterCustomer(Login login)
+        {
+            LoginInfo loginStatus = new LoginInfo();
+
+            loginStatus = customerAccountsManager.Login(login);
+
+            return loginStatus;
+        }
+
     }
 }
