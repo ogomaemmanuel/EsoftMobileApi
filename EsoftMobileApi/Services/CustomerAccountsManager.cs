@@ -444,7 +444,6 @@ namespace ESoft.Web.Services.Registry
             }
             else
             {
-
                 if (user.tbl_CustomerId == Guid.Empty || user.Enabled == false)
                 {
                     //account pending activation
@@ -459,6 +458,13 @@ namespace ESoft.Web.Services.Registry
                     loginInfo.Status = "Failed";
                     loginInfo.User = null;
                 }
+                else
+                {
+                    loginInfo.Message = "Welcome";
+                    loginInfo.Status = "Success";
+                    loginInfo.User = user;
+                }
+
 
             }
 
