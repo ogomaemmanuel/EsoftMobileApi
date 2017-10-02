@@ -159,7 +159,7 @@ namespace EsoftMobileApi.Models
 
     public class MobileUsers
     {
-        public int Id { get; set; }
+        public string IdNo { get; set; }
         public string CustomerName { get; set; }
         public string MobileNo { get; set; }
         public int Pin { get; set; }
@@ -169,5 +169,10 @@ namespace EsoftMobileApi.Models
         public bool? Enabled { get; set; }
     }
 
+    public class Login
+    {
+        public string MobileNo { get; set; }
+        public int Pin { get; set; }
+    }
 
 }
