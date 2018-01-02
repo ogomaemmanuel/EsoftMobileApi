@@ -14,6 +14,7 @@ namespace ESoft.Web.Services.Registry
     public class CustomerAccountsManager
     {
         private readonly Esoft_WebEntities mainDb = new Esoft_WebEntities();
+        private int customerNumberMusk = 6;
 
         public CustomerAccountsManager()
         {
@@ -391,9 +392,29 @@ namespace ESoft.Web.Services.Registry
 
             if (!string.IsNullOrWhiteSpace(id.ToString()))
             {
-                customer = mainDb.tbl_Customer.Where(x => x.tbl_CustomerID == id).Select(x => x).FirstOrDefault();
+                customer = mainDb.tbl_Customer
+                    .Where(x => x.tbl_CustomerID == id)
+                    .Select(x => x)
+                    .FirstOrDefault();
 
             }
+            return customer;
+        }
+
+        public tbl_Customer CustomerDetails(string customerNo)
+        {
+            tbl_Customer customer = new tbl_Customer();
+
+            if (!string.IsNullOrWhiteSpace(customerNo.ToString()))
+            {
+                customerNo = ValueConverters.PADLeft(this.customerNumberMusk, customerNo, '0');
+
+                customer = mainDb.tbl_Customer
+                    .Where(x => x.CustomerNo.Trim() == customerNo.Trim())
+                    .Select(x => x)
+                    .FirstOrDefault();
+            }
+
             return customer;
         }
 
@@ -535,6 +556,8 @@ namespace ESoft.Web.Services.Registry
 
             return activateStatus;
         }
+
+
     }
 
 }

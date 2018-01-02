@@ -31,6 +31,28 @@ namespace EsoftMobileApi.Controllers
             return customer;
         }
 
+        [Route("customers/member/{customerNo}"), HttpGet]
+        public HttpResponseMessage GetCustomerByNumber(String customerNo)
+        {
+            if (String.IsNullOrWhiteSpace(customerNo))
+            {
+                String message = "Empty customer number";
+                HttpError err = new HttpError(message);
+                return Request.CreateResponse(HttpStatusCode.NotFound, err);
+            }
+
+            tbl_Customer customer = customerAccountsManager.CustomerDetails(customerNo);
+
+            if (customer == null)
+            {
+                String notFoundMessage = String.Format("Member number {0} not found", customerNo);
+                HttpError err = new HttpError(notFoundMessage);
+                return Request.CreateResponse(HttpStatusCode.NotFound, err);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, customer);
+        }
+
         [Route("customers/{id}/savings"), HttpGet]
         public List<AccountDetails> GetSavingBalances(Guid id)
         {
