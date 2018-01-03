@@ -14,7 +14,7 @@ namespace ESoft.Web.Services.Registry
     public class CustomerAccountsManager
     {
         private readonly Esoft_WebEntities mainDb = new Esoft_WebEntities();
-        private int customerNumberMusk = 6;
+        private String customerNumberMusk = System.Configuration.ConfigurationManager.AppSettings["CustomerNoMask"].ToString();
 
         public CustomerAccountsManager()
         {
@@ -407,7 +407,7 @@ namespace ESoft.Web.Services.Registry
 
             if (!string.IsNullOrWhiteSpace(customerNo.ToString()))
             {
-                customerNo = ValueConverters.PADLeft(this.customerNumberMusk, customerNo, '0');
+                customerNo = ValueConverters.PADLeft(Int32.Parse(this.customerNumberMusk), customerNo, '0');
 
                 customer = mainDb.tbl_Customer
                     .Where(x => x.CustomerNo.Trim() == customerNo.Trim())

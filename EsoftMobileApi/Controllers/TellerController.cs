@@ -1,4 +1,5 @@
-﻿using EsoftMobileApi.Models;
+﻿using ESoft.Web.Services.Common;
+using EsoftMobileApi.Models;
 using EsoftMobileApi.Services;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace EsoftMobileApi.Controllers
     {
         Esoft_WebEntities mainDb;
         TellerManager tellerManager;
+        string customerNoMask = System.Configuration.ConfigurationManager.AppSettings["CustomerNoMask"].ToString();
 
         public TellerController()
         {
@@ -32,7 +34,8 @@ namespace EsoftMobileApi.Controllers
 
             TellerProductRepaymentsView productRepayments = new TellerProductRepaymentsView();
             TellerProductRepaymentsView custDetails = new TellerProductRepaymentsView();
-            custDetails.CustomerNo = tellerDeposit.CustomerNo;
+
+            custDetails.CustomerNo = ValueConverters.PADLeft(Int32.Parse(customerNoMask), tellerDeposit.CustomerNo, '0');
             List<RepaymentView> repayments = tellerManager.ReadRepayment(tellerDeposit);
 
             if (!tellerManager.PostProductRepayment(custDetails, repayments, tellerDeposit.TellerLoginCode))
