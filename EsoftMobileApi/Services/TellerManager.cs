@@ -95,6 +95,21 @@ namespace EsoftMobileApi.Services
                         loanProductsMgr.Distribute_LoanRepayment(repayment, customerBalances, loanProduct, true);
                         loanProductsMgr.GenerateLoanRepaymentStatements(transactionsEngine, translist, m_transactionid, repayment, loanProduct, trdatenow, trdescpt, docid, referenceNo, 0, 0,
                             income_branch, tellerAccount, "1", "", false, db);
+
+                        //log the trail                     
+                        LogMobileTrail(new MobileOperatorTrail()
+                        {
+                            ReferenceNo = referenceNo,
+                            Ledger = loanProduct.LoanCode,
+                            CustomerNo = custDetails.CustomerNo,
+                            AccountNo = repayment.Ledger,
+                            TransactionDate = trdatenow,
+                            Description = trdescpt,
+                            Amount = ValueConverters.ConvertDoubleToDecimal(repayment.Amount),
+                            DeviceInfo = "info",
+                            LoginCode = tellerAccount,
+                        });
+
                         break;
                     default:
                         break;
@@ -107,10 +122,47 @@ namespace EsoftMobileApi.Services
 
             string result = transactionsEngine.Post_Transactions(translist, m_transactionid, false, false);
 
+            if (result == "Transactions Was Updated Successfully ")
+            {
+                transactionPosted = true;
+            }
+
             return transactionPosted;
         }
 
+        public bool LogMobileTrail(MobileOperatorTrail trail)
+        {
+            bool insertResult = false;
 
+            try
+            {
+                string insertMobileUser = "INSERT INTO Tbl_MobileOperatorTrail(ReferenceNo,Ledger,CustomerNo,AccountNo,TransactionDate,Description,Amount,DeviceInfo,LoginCode,OperatorTrailID) " +
+                     " VALUES('" + trail.ReferenceNo.Format_Sql_String() + "','" +
+                        trail.Ledger.Format_Sql_String() + "','" +
+                        trail.CustomerNo.Format_Sql_String() + "','" +
+                        trail.AccountNo.Format_Sql_String() + "','" +
+                        trail.TransactionDate.ConvertNullToDatetime() + "','" +
+                        trail.Description.Format_Sql_String() + "','" +
+                        ValueConverters.ConvertNullToDecimal(trail.Amount) + "','" +
+                        trail.DeviceInfo.Format_Sql_String() + "','" +
+                        trail.LoginCode.Format_Sql_String() + "','" +
+                        Guid.NewGuid().ToString() + "'); ";
+
+                int result = db.Database.ExecuteSqlCommand(insertMobileUser);
+
+                if (result >= 1)
+                {
+                    insertResult = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteErrorLog(ex.Message, ref ex);
+            }
+
+            return insertResult;
+        }
 
         public string GetTellerGlAccount(string tellerLoginCode)
         {

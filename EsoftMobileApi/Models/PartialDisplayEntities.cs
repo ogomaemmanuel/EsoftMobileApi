@@ -553,10 +553,32 @@ namespace EsoftMobileApi.Models
 
     public class TellerMobileDeposit
     {
+        [Required(ErrorMessage = "CustomerNo  Required")]
         public String CustomerNo { get; set; }
+
+        [Required(ErrorMessage = "Product Code Required")]
         public String ProductCode { get; set; }
+
+        [Required(ErrorMessage = "Transaction Amount Required")]
         public Decimal TrxAmount { get; set; }
+
+        [Required(ErrorMessage = "Teller Login Code Required")]
         public String TellerLoginCode { get; set; }
+    }
+
+    public class MobileOperatorTrail
+    {
+        public String RecNo { get; set; }
+        public String ReferenceNo { get; set; }
+        public String Ledger { get; set; }
+        public String CustomerNo { get; set; }
+        public String AccountNo { get; set; }
+        public DateTime? TransactionDate { get; set; }
+        public String Description { get; set; }
+        public decimal Amount { get; set; }
+        public String DeviceInfo { get; set; }
+        public String LoginCode { get; set; }
+        public Guid OperatorTrailID { get; set; }
     }
 
 }

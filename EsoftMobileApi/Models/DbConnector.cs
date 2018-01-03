@@ -10,7 +10,7 @@ namespace EsoftMobileApi.Models
     {
         private static SqlConnection mainDbConnection = null;
 
-        public static string DBConStr = System.Configuration.ConfigurationManager.ConnectionStrings["Esoft_WebEntities"].ToString();
+        public static string DBConStr = System.Configuration.ConfigurationManager.ConnectionStrings["Esoft_WebConnection"].ToString();
 
         private SqlConnection sqlConn = null;
         public DbConnector()

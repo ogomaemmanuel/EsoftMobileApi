@@ -23,16 +23,24 @@ namespace EsoftMobileApi.Controllers
         }
 
         [Route("tellers/deposit"), HttpPost]
-        public HttpResponseMessage RegisterCustomer(TellerMobileDeposit tellerDeposit)
+        public HttpResponseMessage TellerDeposit(TellerMobileDeposit tellerDeposit)
         {
+            if (!ModelState.IsValid)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
+            }
+
             TellerProductRepaymentsView productRepayments = new TellerProductRepaymentsView();
             TellerProductRepaymentsView custDetails = new TellerProductRepaymentsView();
             custDetails.CustomerNo = tellerDeposit.CustomerNo;
-
             List<RepaymentView> repayments = tellerManager.ReadRepayment(tellerDeposit);
 
-            tellerManager.PostProductRepayment(custDetails, repayments, tellerDeposit.TellerLoginCode);
-            return Request.CreateResponse(HttpStatusCode.OK, tellerDeposit);
+            if (!tellerManager.PostProductRepayment(custDetails, repayments, tellerDeposit.TellerLoginCode))
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, "Transaction posted successfully");
         }
     }
 }
