@@ -269,6 +269,7 @@
     <Compile Include="Controllers\AtmCardsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TellerController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="CountyCode.cs">
       <DependentUpon>EsoftMobile.tt</DependentUpon>
@@ -452,6 +453,8 @@
     <Compile Include="Models\DbConnector.cs" />
     <Compile Include="Models\Functions.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\IValidationDictionary.cs" />
+    <Compile Include="Models\ModelStateWrapper.cs" />
     <Compile Include="Models\PartialDisplayEntities.cs" />
     <Compile Include="notices_Result.cs">
       <DependentUpon>EsoftMobile.tt</DependentUpon>
@@ -496,9 +499,19 @@
       <DependentUpon>EsoftMobile.tt</DependentUpon>
     </Compile>
     <Compile Include="Services\AtmCardsManager.cs" />
+    <Compile Include="Services\common\CustomValidation.cs" />
     <Compile Include="Services\common\ExtensionMethods.cs" />
+    <Compile Include="Services\common\PostTransactions.cs" />
+    <Compile Include="Services\common\Utility.cs" />
     <Compile Include="Services\common\ValueConverters.cs" />
+    <Compile Include="Services\CompanyManager.cs" />
     <Compile Include="Services\CustomerAccountsManager.cs" />
+    <Compile Include="Services\CustomerManager.cs" />
+    <Compile Include="Services\GlAccountsManager.cs" />
+    <Compile Include="Services\InvestmentsCodesManager.cs" />
+    <Compile Include="Services\LoanProductsManager.cs" />
+    <Compile Include="Services\TellerManager.cs" />
+    <Compile Include="Services\UserAdministrationManager.cs" />
     <Compile Include="Single_Customer_Status_deposits_Result.cs">
       <DependentUpon>EsoftMobile.tt</DependentUpon>
     </Compile>
