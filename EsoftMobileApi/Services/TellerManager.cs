@@ -56,7 +56,7 @@ namespace EsoftMobileApi.Services
             string trdescpt = "Product Repayments Cash Deposit From Mobile App";
             string glaccount_db = tellerAccount;
             string glaccount_cr = string.Empty;
-            string docid = "302G";
+            string docid = "MAPP";
             string referenceNo = transactionsEngine.Generate_PostReference(docid);
             bool post_comm_to_customerBranch = false;// transactionsEngine.Get_Other_Settings("POST_TELLER_LOAN_INCOME_TO_CUSTOMER_BRANCH");
             List<PostTransactionsViewModel> translist = new List<PostTransactionsViewModel>();
@@ -84,30 +84,46 @@ namespace EsoftMobileApi.Services
                     case "SAVINGS":
                         break;
                     case "INVESTMENTS":
+                        trdescpt = String.Format("Cash Deposits Mobile App: {0}", referenceNo);
+
                         glaccount_cr = investmentCodes.FirstOrDefault(x => x.InvestmentCode == repayment.ProductCode).PrincipalAccount.ToString();
                         transactionsEngine.Generate_Shares_Transactions(translist, m_transactionid, repayment.CustomerNo, trdatenow, trdescpt, docid, referenceNo, 0, repayment.Amount,
                             income_branch, glaccount_db, glaccount_cr, repayment.ProductCode);
                         transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, repayment.CustomerNo, trdatenow, trdescpt, docid, referenceNo, 0,
                          repayment.Amount, income_branch, glaccount_cr, tellerAccount, repayment.CustomerNo);
+
+                        LogMobileTrail(new MobileOperatorTrail()
+                        {
+                            ReferenceNo = referenceNo,
+                            Ledger = "I",
+                            CustomerNo = custDetails.CustomerNo,
+                            AccountNo = repayment.ProductCode,
+                            TransactionDate = trdatenow,
+                            Description = trdescpt,
+                            Amount = ValueConverters.ConvertDoubleToDecimal(repayment.Amount),
+                            DeviceInfo = "info",
+                            LoginCode = tellerLoginCode,
+                        });
+
                         break;
                     case "LOANS":
+                        trdescpt = String.Format("Loan Repayment Mobile App: {0}", referenceNo);
                         var loanProduct = loanCodes.FirstOrDefault(x => x.LoanCode == repayment.ProductCode);
                         loanProductsMgr.Distribute_LoanRepayment(repayment, customerBalances, loanProduct, true);
                         loanProductsMgr.GenerateLoanRepaymentStatements(transactionsEngine, translist, m_transactionid, repayment, loanProduct, trdatenow, trdescpt, docid, referenceNo, 0, 0,
                             income_branch, tellerAccount, "1", "", false, db);
 
-                        //log the trail                     
                         LogMobileTrail(new MobileOperatorTrail()
                         {
                             ReferenceNo = referenceNo,
-                            Ledger = loanProduct.LoanCode,
+                            Ledger = "L",
                             CustomerNo = custDetails.CustomerNo,
-                            AccountNo = repayment.Ledger,
+                            AccountNo = repayment.ProductCode,
                             TransactionDate = trdatenow,
                             Description = trdescpt,
                             Amount = ValueConverters.ConvertDoubleToDecimal(repayment.Amount),
                             DeviceInfo = "info",
-                            LoginCode = tellerAccount,
+                            LoginCode = tellerLoginCode,
                         });
 
                         break;
