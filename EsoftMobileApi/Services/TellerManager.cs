@@ -90,14 +90,11 @@ namespace EsoftMobileApi.Services
 
                         glaccount_cr = customerDetails.GlMemSav;
 
-                        transactionsEngine
-                            .Generate_Ledger_Transactions(translist, m_transactionid, repayment.ProductCode, trdatenow, trdescpt,
-                                                          docid, referenceNo, repayment.Amount, 0, income_branch,
-                                                          glaccount_db, glaccount_cr, tellerAccount, tellerLoginCode);
+                        transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, repayment.ProductCode, trdatenow, trdescpt,
+                             docid, referenceNo, repayment.Amount, 0, income_branch, glaccount_db, glaccount_cr, tellerAccount, tellerLoginCode);
 
-                        transactionsEngine
-                            .Generate_Ledger_Transactions(translist, m_transactionid, repayment.ProductCode, trdatenow, trdescpt, docid, referenceNo, 0,
-                       repayment.Amount, income_branch, glaccount_cr, glaccount_db, tellerAccount, tellerLoginCode);
+                        transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, repayment.ProductCode, trdatenow, trdescpt,
+                            docid, referenceNo, 0, repayment.Amount, income_branch, glaccount_cr, glaccount_db, tellerAccount, tellerLoginCode);
 
                         transactionsEngine.Generate_Savings_Transactions(translist, m_transactionid, repayment.ProductCode, trdatenow, trdescpt, docid, referenceNo,
                        repayment.Amount, 0, income_branch, glaccount_cr, glaccount_db, repayment.CustomerNo, glaccount_cr, string.Empty, tellerLoginCode);
@@ -124,8 +121,13 @@ namespace EsoftMobileApi.Services
                         transactionsEngine.Generate_Shares_Transactions(translist, m_transactionid, repayment.CustomerNo, trdatenow, trdescpt, docid, referenceNo, 0, repayment.Amount,
                             income_branch, glaccount_db, glaccount_cr, repayment.ProductCode, tellerLoginCode);
 
-                        transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, repayment.CustomerNo, trdatenow, trdescpt, docid, referenceNo, 0,
-                         repayment.Amount, income_branch, glaccount_cr, tellerAccount, repayment.CustomerNo, tellerLoginCode);
+                        transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, repayment.CustomerNo, trdatenow, trdescpt, docid, referenceNo,
+                            0, repayment.Amount, income_branch, glaccount_cr, tellerAccount, repayment.CustomerNo, tellerLoginCode);
+
+                        // final Debit to Teller Account
+                        transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, custDetails.CustomerNo, trdatenow, trdescpt, docid, referenceNo,
+                            repayment.Amount, 0, income_branch, tellerAccount, glaccount_cr, custDetails.CustomerNo, tellerLoginCode);
+
 
                         LogMobileTrail(new MobileOperatorTrail()
                         {
@@ -145,8 +147,18 @@ namespace EsoftMobileApi.Services
                         trdescpt = String.Format("Loan Repayment Mobile App: {0}", referenceNo);
                         var loanProduct = loanCodes.FirstOrDefault(x => x.LoanCode == repayment.ProductCode);
                         loanProductsMgr.Distribute_LoanRepayment(repayment, customerBalances, loanProduct, true);
+
                         loanProductsMgr.GenerateLoanRepaymentStatements(transactionsEngine, translist, m_transactionid, repayment, loanProduct, trdatenow, trdescpt, docid, referenceNo, 0, 0,
                             income_branch, tellerAccount, "1", "", false, db);
+
+                        // final Debit to Teller Account
+                        transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, custDetails.CustomerNo, trdatenow, trdescpt, docid, referenceNo,
+                            repayment.Amount, 0, income_branch, tellerAccount, glaccount_cr, custDetails.CustomerNo, tellerLoginCode);
+
+                        transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, custDetails.CustomerNo, trdatenow, trdescpt, docid, referenceNo,
+                          0, repayment.Amount, income_branch, glaccount_cr, tellerAccount, custDetails.CustomerNo, tellerLoginCode);
+
+
 
                         LogMobileTrail(new MobileOperatorTrail()
                         {
@@ -167,9 +179,7 @@ namespace EsoftMobileApi.Services
                 }
             }
 
-            // final Debit to Teller Account
-            transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, custDetails.CustomerNo, trdatenow, trdescpt, docid, referenceNo, transactionAmount,
-                       0, income_branch, tellerAccount, "LOAN-REP", custDetails.CustomerNo, tellerLoginCode);
+
 
             string result = transactionsEngine.Post_Transactions(translist, m_transactionid, false, false);
 
