@@ -710,7 +710,7 @@ namespace ESoft.Web.Services.Registry
                 if (customerDetails == null)
                 {
                     customerDetails = new CustomerDetailsView();
-                }
+                } 
 
                 foreach (var account in accounts)
                 {
