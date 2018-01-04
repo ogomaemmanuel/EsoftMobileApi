@@ -85,11 +85,11 @@ namespace EsoftMobileApi.Services
                       0, repview.LoanPrincipal, m_BranchCode, m_GlDebit, loanproduct.PrincipalAccount, repview.ProductCode, 1, transaction_groupid, m_LoanReferenceNo, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-                        repview.LoanPrincipal, m_BranchCode, loanproduct.PrincipalAccount, m_GlDebit, repview.CustomerNo);
+                        repview.LoanPrincipal, m_BranchCode, loanproduct.PrincipalAccount, m_GlDebit, repview.CustomerNo, String.Empty);
                 if (checkOffPosting)
                 {
                     transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.LoanPrincipal, 0,
-                         m_BranchCode, m_GlDebit, loanproduct.PrincipalAccount, repview.CustomerNo);
+                         m_BranchCode, m_GlDebit, loanproduct.PrincipalAccount, repview.CustomerNo, String.Empty);
                 }
             }
             if (repview.LoanInt > 0)
@@ -98,11 +98,12 @@ namespace EsoftMobileApi.Services
                     0, repview.LoanInt, m_BranchCode, m_GlDebit, loanproduct.InterestControlAccount, repview.ProductCode, 2, transaction_groupid, m_LoanReferenceNo, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-                        repview.LoanInt, m_BranchCode, loanproduct.InterestControlAccount, m_GlDebit, repview.CustomerNo);
+                        repview.LoanInt, m_BranchCode, loanproduct.InterestControlAccount, m_GlDebit, repview.CustomerNo, String.Empty);
+
                 if (checkOffPosting)
                 {
                     transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.LoanInt,
-                        0, m_BranchCode, m_GlDebit, loanproduct.InterestControlAccount, repview.CustomerNo);
+                        0, m_BranchCode, m_GlDebit, loanproduct.InterestControlAccount, repview.CustomerNo, String.Empty);
                 }
                 income_Account = loanproduct.InterestIncomeAccount;
                 accrued_Account = loanproduct.InterestAccruedAccount;
@@ -116,11 +117,11 @@ namespace EsoftMobileApi.Services
                         0, repview.LoanIns, m_BranchCode, m_GlDebit, loanproduct.InsuranceControlAccount, repview.ProductCode, 3, transaction_groupid, m_LoanReferenceNo, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-                    repview.LoanIns, m_BranchCode, loanproduct.InsuranceControlAccount, m_GlDebit, repview.CustomerNo);
+                    repview.LoanIns, m_BranchCode, loanproduct.InsuranceControlAccount, m_GlDebit, repview.CustomerNo, String.Empty);
                 if (checkOffPosting)
                 {
                     transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.LoanIns,
-                        0, m_BranchCode, m_GlDebit, loanproduct.InsuranceControlAccount, repview.CustomerNo);
+                        0, m_BranchCode, m_GlDebit, loanproduct.InsuranceControlAccount, repview.CustomerNo, String.Empty);
                 }
                 income_Account = loanproduct.InsuranceIncomeAccount;
                 accrued_Account = loanproduct.InsuranceAccruedAccount;
@@ -133,11 +134,11 @@ namespace EsoftMobileApi.Services
                         0, repview.LoanApp, m_BranchCode, m_GlDebit, loanproduct.AppraisalFeeControlAccount, repview.ProductCode, 4, transaction_groupid, m_LoanReferenceNo, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-                         repview.LoanApp, m_BranchCode, loanproduct.AppraisalFeeControlAccount, m_GlDebit, repview.CustomerNo);
+                         repview.LoanApp, m_BranchCode, loanproduct.AppraisalFeeControlAccount, m_GlDebit, repview.CustomerNo, String.Empty);
                 if (checkOffPosting)
                 {
                     transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.LoanApp,
-                        0, m_BranchCode, m_GlDebit, loanproduct.AppraisalFeeControlAccount, repview.CustomerNo);
+                        0, m_BranchCode, m_GlDebit, loanproduct.AppraisalFeeControlAccount, repview.CustomerNo, String.Empty);
                 }
 
                 income_Account = loanproduct.AppraisalFeeIncomeAccount;
@@ -151,11 +152,11 @@ namespace EsoftMobileApi.Services
                         0, repview.LoanPen, m_BranchCode, m_GlDebit, loanproduct.PenaltyControlAccount, repview.ProductCode, 4, transaction_groupid, m_LoanReferenceNo, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-              repview.LoanPen, m_BranchCode, loanproduct.PenaltyControlAccount, m_GlDebit, repview.CustomerNo);
+              repview.LoanPen, m_BranchCode, loanproduct.PenaltyControlAccount, m_GlDebit, repview.CustomerNo, String.Empty);
                 if (checkOffPosting)
                 {
                     transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.LoanPen,
-                        0, m_BranchCode, m_GlDebit, loanproduct.PenaltyControlAccount, repview.CustomerNo);
+                        0, m_BranchCode, m_GlDebit, loanproduct.PenaltyControlAccount, repview.CustomerNo, String.Empty);
                 }
 
                 income_Account = loanproduct.PenaltyIncomeAccount;
@@ -169,7 +170,7 @@ namespace EsoftMobileApi.Services
                      repview.loan_Levy, repview.loan_Levy, m_BranchCode, m_GlDebit, loanproduct.CashPayment_GlAccount, repview.ProductCode, 1, transaction_groupid, m_LoanReferenceNo, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, repview.CustomerNo, m_TransactionDate, "Levy " + m_Narration, m_Docid, m_ReferenceNo, 0,
-                     repview.loan_Levy, m_BranchCode, loanproduct.CashPayment_GlAccount, m_GlDebit, repview.CustomerNo);
+                     repview.loan_Levy, m_BranchCode, loanproduct.CashPayment_GlAccount, m_GlDebit, repview.CustomerNo, String.Empty);
             }
             if (raiseDebit == true && checkOffPosting == false)
             {
@@ -177,7 +178,7 @@ namespace EsoftMobileApi.Services
                     ValueConverters.ConvertNullToDouble(repview.LoanPen) + ValueConverters.ConvertNullToDouble(repview.LoanInt) + ValueConverters.ConvertNullToDouble(repview.LoanPrincipal);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.Amount,
-                                    0, m_BranchCode, m_GlDebit, "Product-Rep", repview.CustomerNo);
+                                    0, m_BranchCode, m_GlDebit, "Product-Rep", repview.CustomerNo, String.Empty);
             }
             else { /* Raise Final Debit in Calling Module*/}
             return translist;
@@ -187,9 +188,9 @@ namespace EsoftMobileApi.Services
             string m_Narration, string m_Docid, string m_ReferenceNo, double amount, string m_GlDebit, string m_GlCredit, string m_BranchCode, string productCode = "", bool checkOffPosting = false)
         {
             transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? productCode : customerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-             amount, m_BranchCode, m_GlCredit, m_GlDebit, customerNo);
+             amount, m_BranchCode, m_GlCredit, m_GlDebit, customerNo, String.Empty);
             transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? productCode : customerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, amount,
-             0, m_BranchCode, m_GlDebit, m_GlCredit, customerNo);
+             0, m_BranchCode, m_GlDebit, m_GlCredit, customerNo, String.Empty);
         }
     }
 }

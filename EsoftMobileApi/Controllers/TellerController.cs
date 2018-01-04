@@ -38,7 +38,7 @@ namespace EsoftMobileApi.Controllers
             custDetails.CustomerNo = ValueConverters.PADLeft(Int32.Parse(customerNoMask), tellerDeposit.CustomerNo, '0');
             List<RepaymentView> repayments = tellerManager.ReadRepayment(tellerDeposit);
 
-            if (!tellerManager.PostProductRepayment(custDetails, repayments, tellerDeposit.TellerLoginCode))
+            if (!tellerManager.PostProductRepayment(custDetails, repayments, tellerDeposit.TellerLoginCode, tellerDeposit.DeviceInfo))
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ModelState);
             }
