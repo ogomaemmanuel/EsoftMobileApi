@@ -146,7 +146,7 @@ namespace EsoftMobileApi.Services
                     case "LOANS":
                         trdescpt = String.Format("Loan Repayment Mobile App: {0}", referenceNo);
                         var loanProduct = loanCodes.FirstOrDefault(x => x.LoanCode == repayment.ProductCode);
-                        //loanProductsMgr.Distribute_LoanRepayment(repayment, customerBalances, loanProduct, true);
+                        loanProductsMgr.Distribute_LoanRepayment(repayment, customerBalances, loanProduct, true);
                         glaccount_cr = loanProduct.PrincipalAccount;
                         loanProductsMgr.GenerateLoanRepaymentStatements(transactionsEngine, translist, m_transactionid, repayment, loanProduct, trdatenow, trdescpt, docid, referenceNo, 0, 0,
                             income_branch, tellerAccount, "1", "", false, db);

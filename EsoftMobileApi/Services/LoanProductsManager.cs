@@ -35,13 +35,13 @@ namespace EsoftMobileApi.Services
                 double amount;
                 if (chargeCashPayLevy)
                 {
-                    amount = (double)Math.Max(ValueConverters.ConvertNullToDecimal(loanproduct.CashPayment_Charge),
-                        (decimal)ValueConverters.Round05(ValueConverters.ConvertNullToDecimal(loanproduct.CashPayment_Charge_Rate) * (decimal)repview.Amount) / 100);
-                    amount = Math.Max(amount, 0);
+                    //amount = (double)Math.Max(ValueConverters.ConvertNullToDecimal(loanproduct.CashPayment_Charge),
+                    //    (decimal)ValueConverters.Round05(ValueConverters.ConvertNullToDecimal(loanproduct.CashPayment_Charge_Rate) * (decimal)repview.Amount) / 100);
+                    //amount = Math.Max(amount, 0);
 
-                    amount = Math.Min(amount, total_amount);
-                    total_amount = total_amount - amount;
-                    repview.loan_Levy = amount;
+                    //amount = Math.Min(amount, total_amount);
+                    //total_amount = total_amount - amount;
+                    //repview.loan_Levy = amount;
                 }
                 if (product.IntBalance > 0)
                 {
