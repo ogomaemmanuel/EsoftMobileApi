@@ -21,14 +21,20 @@ namespace EsoftMobileApi.Controllers
         {
             mainDb = new Esoft_WebEntities();
             customerAccountsManager = new CustomerAccountsManager();
-
         }
 
         [Route("customers/{id}"), HttpGet]
-        public tbl_Customer GetCustomer(Guid id)
+        public HttpResponseMessage GetCustomer(Guid id)
         {
-            tbl_Customer customer = customerAccountsManager.CustomerDetails(id);
-            return customer;
+            MobileAppCustomer customer = customerAccountsManager.MobileAppCustomerDetails(id);
+            if (customer == null)
+            {
+                String notFoundMessage = "Member number not found";
+                HttpError err = new HttpError(notFoundMessage);
+                return Request.CreateResponse(HttpStatusCode.NotFound, err);
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, customer);
         }
 
         [Route("customers/member/{customerNo}"), HttpGet]
