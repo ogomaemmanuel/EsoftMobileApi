@@ -155,8 +155,8 @@ namespace EsoftMobileApi.Services
                         transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, custDetails.CustomerNo, trdatenow, trdescpt, docid, referenceNo,
                             repayment.Amount, 0, income_branch, tellerAccount, glaccount_cr, custDetails.CustomerNo, tellerLoginCode);
 
-                        transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, custDetails.CustomerNo, trdatenow, trdescpt, docid, referenceNo,
-                          0, repayment.Amount, income_branch, glaccount_cr, tellerAccount, custDetails.CustomerNo, tellerLoginCode);
+                        //transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, custDetails.CustomerNo, trdatenow, trdescpt, docid, referenceNo,
+                        //  0, repayment.Amount, income_branch, glaccount_cr, tellerAccount, custDetails.CustomerNo, tellerLoginCode);
 
 
 
