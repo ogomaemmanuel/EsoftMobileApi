@@ -36,7 +36,7 @@ namespace EsoftMobileApi.Services
         }
 
         // Post Teller Product Repayments
-        public bool PostProductRepayment(TellerProductRepaymentsView custDetails, List<RepaymentView> repayments, string tellerLoginCode)
+        public bool PostProductRepayment(TellerProductRepaymentsView custDetails, List<RepaymentView> repayments, string tellerLoginCode, string deviceInfo)
         {
             bool transactionPosted = false;
 
@@ -111,7 +111,7 @@ namespace EsoftMobileApi.Services
                             TransactionDate = trdatenow,
                             Description = trdescpt,
                             Amount = ValueConverters.ConvertDoubleToDecimal(repayment.Amount),
-                            DeviceInfo = "info",
+                            DeviceInfo = deviceInfo ?? String.Empty,
                             LoginCode = tellerLoginCode,
                         });
 
@@ -136,7 +136,7 @@ namespace EsoftMobileApi.Services
                             TransactionDate = trdatenow,
                             Description = trdescpt,
                             Amount = ValueConverters.ConvertDoubleToDecimal(repayment.Amount),
-                            DeviceInfo = "info",
+                            DeviceInfo = deviceInfo ?? String.Empty,
                             LoginCode = tellerLoginCode,
                         });
 
@@ -157,7 +157,7 @@ namespace EsoftMobileApi.Services
                             TransactionDate = trdatenow,
                             Description = trdescpt,
                             Amount = ValueConverters.ConvertDoubleToDecimal(repayment.Amount),
-                            DeviceInfo = "info",
+                            DeviceInfo = deviceInfo ?? String.Empty,
                             LoginCode = tellerLoginCode,
                         });
 
