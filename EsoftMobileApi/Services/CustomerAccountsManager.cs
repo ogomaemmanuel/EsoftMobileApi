@@ -425,7 +425,7 @@ namespace ESoft.Web.Services.Registry
                 if (customer != null)
                 {
                     if (!string.IsNullOrWhiteSpace(customer.LoginCode) &&
-                        !string.IsNullOrWhiteSpace(customer.TellerAcount))
+                        !string.IsNullOrWhiteSpace(customer.TellerAccountNo))
                     {
                         customer.IsTeller = true;
                     }
@@ -710,7 +710,7 @@ namespace ESoft.Web.Services.Registry
                 if (customerDetails == null)
                 {
                     customerDetails = new CustomerDetailsView();
-                } 
+                }
 
                 foreach (var account in accounts)
                 {
