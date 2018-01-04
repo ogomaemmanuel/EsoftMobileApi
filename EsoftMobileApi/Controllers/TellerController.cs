@@ -11,7 +11,7 @@ using System.Web.Http.Cors;
 
 namespace EsoftMobileApi.Controllers
 {
-    [EnableCors(origins: "http://localhost:8100", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class TellerController : ApiController
     {
         Esoft_WebEntities mainDb;

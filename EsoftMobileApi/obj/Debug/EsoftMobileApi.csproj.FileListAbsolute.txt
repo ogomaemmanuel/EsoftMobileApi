@@ -129,3 +129,4 @@ C:\esoftMobileApi\EsoftMobileApi\bin\Microsoft.Owin.Security.MicrosoftAccount.xm
 C:\esoftMobileApi\EsoftMobileApi\bin\System.Web.Http.Owin.xml
 C:\esoftMobileApi\EsoftMobileApi\obj\Debug\EsoftMobileApi.dll
 C:\esoftMobileApi\EsoftMobileApi\obj\Debug\EsoftMobileApi.pdb
+C:\esoftMobileApi\EsoftMobileApi\obj\Debug\EsoftMobileApi.csprojResolveAssemblyReference.cache

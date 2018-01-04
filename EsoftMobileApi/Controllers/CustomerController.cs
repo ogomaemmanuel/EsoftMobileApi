@@ -10,7 +10,7 @@ using ESoft.Web.Services.Registry;
 
 namespace EsoftMobileApi.Controllers
 {
-    [EnableCors(origins: "http://localhost:8100", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class CustomerController : ApiController
     {
         Esoft_WebEntities mainDb;
