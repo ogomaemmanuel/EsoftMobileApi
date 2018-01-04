@@ -589,7 +589,7 @@ namespace EsoftMobileApi.Models
         public string CustomerNo { get; set; }
         public string LoginCode { get; set; }
         public Boolean IsTeller { get; set; }
-        public string TellerAcount { get; set; }
+        public string TellerAccountNo { get; set; }
         public string CustomerName { get; set; }
         public string CustomerIdNo { get; set; }
         public string Salutation { get; set; }
