@@ -404,8 +404,34 @@ namespace ESoft.Web.Services.Registry
                     .Where(x => x.tbl_CustomerID == id)
                     .Select(x => x)
                     .FirstOrDefault();
-
             }
+            return customer;
+        }
+
+        public MobileAppCustomer MobileAppCustomerDetails(Guid id)
+        {
+            MobileAppCustomer customer = new MobileAppCustomer();
+            //TODO REPLACE * WITH COLUMNS
+
+            string query = "select * from tbl_Customer c " +
+                            " left join tbl_users u on ltrim(rtrim(c.CustomerNo)) = ltrim(rtrim(u.SaccoMembershipNumber)) " +
+                            " left join tbl_TellerAccounts ta on ta.LoginCode = u.LoginCode " +
+                            " where c.tbl_CustomerID = '" + id.ToString() + "'";
+
+            if (!string.IsNullOrWhiteSpace(id.ToString()))
+            {
+                customer = mainDb.Database.SqlQuery<MobileAppCustomer>(query).FirstOrDefault();
+
+                if (customer != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(customer.LoginCode) &&
+                        !string.IsNullOrWhiteSpace(customer.TellerAcount))
+                    {
+                        customer.IsTeller = true;
+                    }
+                }
+            }
+
             return customer;
         }
 
@@ -684,7 +710,7 @@ namespace ESoft.Web.Services.Registry
                 if (customerDetails == null)
                 {
                     customerDetails = new CustomerDetailsView();
-                }
+                } 
 
                 foreach (var account in accounts)
                 {

@@ -583,4 +583,50 @@ namespace EsoftMobileApi.Models
         public Guid OperatorTrailID { get; set; }
     }
 
+    public partial class MobileAppCustomer
+    {
+        public long recno { get; set; }
+        public string CustomerNo { get; set; }
+        public string LoginCode { get; set; }
+        public Boolean IsTeller { get; set; }
+        public string TellerAcount { get; set; }
+        public string CustomerName { get; set; }
+        public string CustomerIdNo { get; set; }
+        public string Salutation { get; set; }
+        public Nullable<System.DateTime> DateOfBirth { get; set; }
+        public string Gender { get; set; }
+        public string CountyCode { get; set; }
+        public string District { get; set; }
+        public string Division { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string PostalCode { get; set; }
+        public string Telephone1 { get; set; }
+        public string MobileNo { get; set; }
+        public string EmailAddress { get; set; }
+        public string Profession { get; set; }
+        public string EmployerCode { get; set; }
+        public string StationCode { get; set; }
+        public string EmpNumber { get; set; }
+        public Nullable<System.DateTime> EmploymentDate { get; set; }
+        public Nullable<System.DateTime> JoiningDate { get; set; }
+        public string IntroducedBy { get; set; }
+        public Nullable<int> SigningInstructions { get; set; }
+        public string Branch { get; set; }
+        public Nullable<bool> Locked { get; set; }
+        public string AccountRemarks { get; set; }
+        public string AccountComments { get; set; }
+        public string pin_number { get; set; }
+        public string RecruitedBy { get; set; }
+        public Nullable<System.DateTime> DateClosed { get; set; }
+        public string ClosedBy { get; set; }
+        public string MemberType { get; set; }
+        public string ContactPeronName { get; set; }
+        public string ContactPeronTelephone { get; set; }
+        public string IdType { get; set; }
+        public string MaritalStatus { get; set; }
+        public string Nationality { get; set; }
+        public System.Guid tbl_CustomerID { get; set; }
+    }
+
 }
