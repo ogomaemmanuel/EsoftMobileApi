@@ -23,7 +23,6 @@ namespace EsoftMobileApi.Services
         private CustomerAccountsManager customerAccountsManager = new CustomerAccountsManager();
         private Esoft_WebEntities db;
 
-        private string userBranch = "99";
 
         public TellerManager()
         {
@@ -60,7 +59,8 @@ namespace EsoftMobileApi.Services
             string glaccount_cr = string.Empty;
             string docid = "MAPP";
             string referenceNo = transactionsEngine.Generate_PostReference(docid);
-            bool post_comm_to_customerBranch = false;// transactionsEngine.Get_Other_Settings("POST_TELLER_LOAN_INCOME_TO_CUSTOMER_BRANCH");
+            bool post_comm_to_customerBranch = true;// transactionsEngine.Get_Other_Settings("POST_TELLER_LOAN_INCOME_TO_CUSTOMER_BRANCH");
+            string defaultBranch = "99";
             List<PostTransactionsViewModel> translist = new List<PostTransactionsViewModel>();
 
             InvestmentsCodesManager investMgr = new InvestmentsCodesManager();
@@ -72,7 +72,7 @@ namespace EsoftMobileApi.Services
             List<CustomerBalances> customerBalances = new List<CustomerBalances>();
             customerBalances = customerManager.GetCustomerBalances(custDetails.CustomerNo, DateTime.Now, customerBalances);
 
-            string income_branch = userBranch;
+            string income_branch = defaultBranch;
             if (post_comm_to_customerBranch)
             {
                 income_branch = db.tbl_Customer.FirstOrDefault(x => x.CustomerNo == custDetails.CustomerNo).Branch;
@@ -93,34 +93,39 @@ namespace EsoftMobileApi.Services
                         transactionsEngine
                             .Generate_Ledger_Transactions(translist, m_transactionid, repayment.ProductCode, trdatenow, trdescpt,
                                                           docid, referenceNo, repayment.Amount, 0, income_branch,
-                                                          glaccount_db, glaccount_cr, tellerAccount);
+                                                          glaccount_db, glaccount_cr, tellerAccount, tellerLoginCode);
 
                         transactionsEngine
                             .Generate_Ledger_Transactions(translist, m_transactionid, repayment.ProductCode, trdatenow, trdescpt, docid, referenceNo, 0,
-                       repayment.Amount, income_branch, glaccount_cr, glaccount_db, tellerAccount);
+                       repayment.Amount, income_branch, glaccount_cr, glaccount_db, tellerAccount, tellerLoginCode);
 
                         transactionsEngine.Generate_Savings_Transactions(translist, m_transactionid, repayment.ProductCode, trdatenow, trdescpt, docid, referenceNo,
-                       repayment.Amount, 0, income_branch, glaccount_cr, glaccount_db, repayment.CustomerNo, glaccount_cr, string.Empty);
+                       repayment.Amount, 0, income_branch, glaccount_cr, glaccount_db, repayment.CustomerNo, glaccount_cr, string.Empty, tellerLoginCode);
 
-                        //PaymentCommissionsManager paycommMgr = new PaymentCommissionsManager();
-                        //PayCommissionAmount commissionCharged = new PayCommissionAmount();
-
-                        //commissionCharged.CustomerBranch = cashDeposit.customerDetails.CustomerBranch;
-                        //commissionCharged = paycommMgr.GetChargeAbleCommission(commissionCharged, cashDeposit.customerDetails.AccountTypeSettings.cashDepositComm_Code, cashDeposit.customerDetails.AccountType, cashDeposit.TransactionAmount);
-
-                        //transactionsEngine.Generate_Commission_Transactions(transactionsEngine, translist, m_transactionid, cashDeposit.AccountNo, trdatenow, cashDeposit.Docid, cashDeposit.ReferenceNo,
-                        //glaccount_cr, cashDeposit.CustomerNo, true, commissionCharged);
-
+                        LogMobileTrail(new MobileOperatorTrail()
+                        {
+                            ReferenceNo = referenceNo,
+                            Ledger = "S",
+                            CustomerNo = custDetails.CustomerNo,
+                            AccountNo = repayment.ProductCode,
+                            TransactionDate = trdatenow,
+                            Description = trdescpt,
+                            Amount = ValueConverters.ConvertDoubleToDecimal(repayment.Amount),
+                            DeviceInfo = "info",
+                            LoginCode = tellerLoginCode,
+                        });
 
                         break;
                     case "INVESTMENTS":
                         trdescpt = String.Format("Cash Deposits Mobile App: {0}", referenceNo);
 
                         glaccount_cr = investmentCodes.FirstOrDefault(x => x.InvestmentCode == repayment.ProductCode).PrincipalAccount.ToString();
+
                         transactionsEngine.Generate_Shares_Transactions(translist, m_transactionid, repayment.CustomerNo, trdatenow, trdescpt, docid, referenceNo, 0, repayment.Amount,
-                            income_branch, glaccount_db, glaccount_cr, repayment.ProductCode);
+                            income_branch, glaccount_db, glaccount_cr, repayment.ProductCode, tellerLoginCode);
+
                         transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, repayment.CustomerNo, trdatenow, trdescpt, docid, referenceNo, 0,
-                         repayment.Amount, income_branch, glaccount_cr, tellerAccount, repayment.CustomerNo);
+                         repayment.Amount, income_branch, glaccount_cr, tellerAccount, repayment.CustomerNo, tellerLoginCode);
 
                         LogMobileTrail(new MobileOperatorTrail()
                         {
@@ -164,7 +169,7 @@ namespace EsoftMobileApi.Services
 
             // final Debit to Teller Account
             transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, custDetails.CustomerNo, trdatenow, trdescpt, docid, referenceNo, transactionAmount,
-                       0, income_branch, tellerAccount, "LOAN-REP", custDetails.CustomerNo);
+                       0, income_branch, tellerAccount, "LOAN-REP", custDetails.CustomerNo, tellerLoginCode);
 
             string result = transactionsEngine.Post_Transactions(translist, m_transactionid, false, false);
 

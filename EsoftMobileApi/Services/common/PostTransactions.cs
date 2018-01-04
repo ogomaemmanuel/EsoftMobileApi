@@ -109,7 +109,7 @@ namespace EsoftMobileApi.Services.common
 
         public List<PostTransactionsViewModel> Generate_Savings_Transactions
             (List<PostTransactionsViewModel> transList, string m_current_posting_reference, string m_AccountNo, DateTime m_TransactionDate, string m_Narration, string m_Docid, string m_ReferenceNo,
-            double m_DebitAmount, double m_CreditAmount, string m_BranchCode, string m_GlDebit, string m_GlCredit, string m_CustomerNo, string m_glMemSav, string m_Sms_message_to_send)
+            double m_DebitAmount, double m_CreditAmount, string m_BranchCode, string m_GlDebit, string m_GlCredit, string m_CustomerNo, string m_glMemSav, string m_Sms_message_to_send, string loginCode)
         {
             m_GlDebit = ValueConverters.ConvertNullToEmptyString(m_GlDebit);
             m_GlCredit = ValueConverters.ConvertNullToEmptyString(m_GlCredit);
@@ -135,7 +135,7 @@ namespace EsoftMobileApi.Services.common
                 Narration = m_Narration,
                 Docid = m_Docid,
                 ReferenceNo = m_ReferenceNo,
-                LoginCode = "",
+                LoginCode = loginCode ?? String.Empty,
                 Machine = "",
                 DebitAmount = m_DebitAmount,
                 CreditAmount = m_CreditAmount,
@@ -158,7 +158,7 @@ namespace EsoftMobileApi.Services.common
         public List<PostTransactionsViewModel> Generate_Ledger_Transactions
             (List<PostTransactionsViewModel> transList,
              string m_current_posting_reference, string m_AccountNo, DateTime m_TransactionDate, string m_Narration, string m_Docid, string m_ReferenceNo, double m_DebitAmount,
-        double m_CreditAmount, string m_BranchCode, string m_GlAccount, string m_GlContra, string m_CustomerNo)
+        double m_CreditAmount, string m_BranchCode, string m_GlAccount, string m_GlContra, string m_CustomerNo,string loginCode)
         {
             if (m_DebitAmount < 0.00)
             {
@@ -182,7 +182,7 @@ namespace EsoftMobileApi.Services.common
                 Narration = m_Narration,
                 Docid = m_Docid,
                 ReferenceNo = m_ReferenceNo,
-                LoginCode = "",
+                LoginCode = loginCode,
                 Machine = "",
                 DebitAmount = m_DebitAmount,
                 CreditAmount = m_CreditAmount,
@@ -204,7 +204,7 @@ namespace EsoftMobileApi.Services.common
         public List<PostTransactionsViewModel> Generate_Shares_Transactions
             (List<PostTransactionsViewModel> transList, string m_current_posting_reference, string m_AccountNo, DateTime m_TransactionDate, string m_Narration,
             string m_Docid, string m_ReferenceNo, double m_DebitAmount,
-    double m_CreditAmount, string m_BranchCode, string m_GlDebit, string m_GlCredit, string m_productCode)
+    double m_CreditAmount, string m_BranchCode, string m_GlDebit, string m_GlCredit, string m_productCode,string loginCode)
         {
             if (m_DebitAmount < 0.00)
             {
@@ -226,7 +226,7 @@ namespace EsoftMobileApi.Services.common
                 Narration = m_Narration,
                 Docid = m_Docid,
                 ReferenceNo = m_ReferenceNo,
-                LoginCode = "",
+                LoginCode = loginCode,
                 Machine = "",
                 DebitAmount = m_DebitAmount,
                 CreditAmount = m_CreditAmount,
@@ -812,57 +812,6 @@ namespace EsoftMobileApi.Services.common
             sqlParameters.Add(new SqlParameter("@Sms_Message", SqlDbType.VarChar, 159));
             return sqlParameters.ToArray();
         }
-
-        //public List<PostTransactionsViewModel> Generate_Commission_Transactions
-        //  (PostTransactions transactionsEngine, List<PostTransactionsViewModel> transList, string m_transactionid, string m_AccountNo, DateTime trdatenow,
-        //  string m_Docid, string m_ReferenceNo, string m_GlMemsav, string m_customerNo, bool m_Split_to_CustomerBranch, PayCommissionAmount commissionCharged)
-        //{
-
-        //    if (ValueConverters.ConvertNullToDouble(commissionCharged.Charge) > 0)
-        //    {
-        //        transactionsEngine.Generate_Ledger_Transactions(transList, m_transactionid, m_AccountNo, trdatenow, commissionCharged.CommissionName, m_Docid, m_ReferenceNo, commissionCharged.Charge, 0,
-        //                UserSession.Current.userDetails.UserBranch, m_GlMemsav, commissionCharged.GlAccount, m_customerNo);
-
-        //        double commission_split = 0;
-        //        if (m_Split_to_CustomerBranch)
-        //        {
-        //            if (!ValueConverters.IsStringEmpty(commissionCharged.CustomerBranch) && !ValueConverters.IsStringEmpty(UserSession.Current.userDetails.UserBranch))
-        //            {
-        //                if (commissionCharged.CustomerBranch != UserSession.Current.userDetails.UserBranch)
-        //                {
-        //                    commission_split = ValueConverters.Round05(UserSession.Current.SessionVariables.Teller_Commission_Split_Percentage * commissionCharged.Charge);
-        //                }
-        //            }
-        //        }
-
-        //        transactionsEngine.Generate_Ledger_Transactions(transList, m_transactionid, m_AccountNo, trdatenow, commissionCharged.CommissionName, m_Docid, m_ReferenceNo, 0,
-        //            commissionCharged.Charge - commission_split, UserSession.Current.userDetails.UserBranch, commissionCharged.GlAccount, m_GlMemsav, m_customerNo);
-
-        //        if (commission_split > 0)
-        //        {
-        //            transactionsEngine.Generate_Ledger_Transactions(transList, m_transactionid, m_AccountNo, trdatenow, commissionCharged.CommissionName, m_Docid, m_ReferenceNo, 0,
-        //                 commission_split, commissionCharged.CustomerBranch, commissionCharged.GlAccount, m_GlMemsav, m_customerNo);
-        //        }
-
-        //        transactionsEngine.Generate_Savings_Transactions(transList, m_transactionid, m_AccountNo, trdatenow, commissionCharged.CommissionName, m_Docid, m_ReferenceNo,
-        //                        0, commissionCharged.Charge, UserSession.Current.userDetails.UserBranch, commissionCharged.GlAccount, m_GlMemsav, m_customerNo, m_GlMemsav, string.Empty);
-
-        //        if (ValueConverters.ConvertNullToDouble(commissionCharged.ExciseDuty) > 0)
-        //        {
-        //            transactionsEngine.Generate_Ledger_Transactions(transList, m_transactionid, m_AccountNo, trdatenow, "Excise Duty " + commissionCharged.CommissionName, m_Docid, m_ReferenceNo, commissionCharged.ExciseDuty, 0,
-        //                    UserSession.Current.userDetails.UserBranch, m_GlMemsav, commissionCharged.GlAccount, m_customerNo);
-
-        //            transactionsEngine.Generate_Ledger_Transactions(transList, m_transactionid, m_AccountNo, trdatenow, "Excise Duty " + commissionCharged.CommissionName, m_Docid, m_ReferenceNo, 0,
-        //                commissionCharged.ExciseDuty, UserSession.Current.userDetails.UserBranch, UserSession.Current.userDetails.BranchExciseDutyGlAccount, m_GlMemsav, m_customerNo);
-
-        //            transactionsEngine.Generate_Savings_Transactions(transList, m_transactionid, m_AccountNo, trdatenow, "Excise Duty " + commissionCharged.CommissionName, m_Docid, m_ReferenceNo,
-        //                            0, commissionCharged.ExciseDuty, UserSession.Current.userDetails.UserBranch, UserSession.Current.userDetails.BranchExciseDutyGlAccount, m_GlMemsav, m_customerNo, m_GlMemsav, string.Empty);
-        //        }
-        //    }
-
-        //    return transList;
-        //}
-
 
 
         public void Generate_Sms_Message_NoCharge(List<PostTransactionsViewModel> transList, string m_transactionid, string customerNo, string mobilePhoneNo, string smsMessage)
