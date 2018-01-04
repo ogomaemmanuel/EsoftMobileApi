@@ -1,4 +1,5 @@
 ﻿using ESoft.Web.Services.Common;
+using ESoft.Web.Services.Registry;
 using EsoftMobileApi.Models;
 using EsoftMobileApi.Services.common;
 using System;
@@ -19,6 +20,7 @@ namespace EsoftMobileApi.Services
         private CompanyManager companyManager = new CompanyManager();
         private LoanProductsManager loanProductsMgr = new LoanProductsManager();
         private InvestmentsCodesManager investMgr = new InvestmentsCodesManager();
+        private CustomerAccountsManager customerAccountsManager = new CustomerAccountsManager();
         private Esoft_WebEntities db;
 
         private string userBranch = "99";
@@ -82,6 +84,34 @@ namespace EsoftMobileApi.Services
                 switch (repayment.Ledger)
                 {
                     case "SAVINGS":
+                        trdescpt = String.Format("Cash Deposits Mobile App: {0}", referenceNo);
+
+                        CustomerAccountsView customerDetails = customerAccountsManager.GetAccountByAccountNumber(repayment.ProductCode);
+
+                        glaccount_cr = customerDetails.GlMemSav;
+
+                        transactionsEngine
+                            .Generate_Ledger_Transactions(translist, m_transactionid, repayment.ProductCode, trdatenow, trdescpt,
+                                                          docid, referenceNo, repayment.Amount, 0, income_branch,
+                                                          glaccount_db, glaccount_cr, tellerAccount);
+
+                        transactionsEngine
+                            .Generate_Ledger_Transactions(translist, m_transactionid, repayment.ProductCode, trdatenow, trdescpt, docid, referenceNo, 0,
+                       repayment.Amount, income_branch, glaccount_cr, glaccount_db, tellerAccount);
+
+                        transactionsEngine.Generate_Savings_Transactions(translist, m_transactionid, repayment.ProductCode, trdatenow, trdescpt, docid, referenceNo,
+                       repayment.Amount, 0, income_branch, glaccount_cr, glaccount_db, repayment.CustomerNo, glaccount_cr, string.Empty);
+
+                        //PaymentCommissionsManager paycommMgr = new PaymentCommissionsManager();
+                        //PayCommissionAmount commissionCharged = new PayCommissionAmount();
+
+                        //commissionCharged.CustomerBranch = cashDeposit.customerDetails.CustomerBranch;
+                        //commissionCharged = paycommMgr.GetChargeAbleCommission(commissionCharged, cashDeposit.customerDetails.AccountTypeSettings.cashDepositComm_Code, cashDeposit.customerDetails.AccountType, cashDeposit.TransactionAmount);
+
+                        //transactionsEngine.Generate_Commission_Transactions(transactionsEngine, translist, m_transactionid, cashDeposit.AccountNo, trdatenow, cashDeposit.Docid, cashDeposit.ReferenceNo,
+                        //glaccount_cr, cashDeposit.CustomerNo, true, commissionCharged);
+
+
                         break;
                     case "INVESTMENTS":
                         trdescpt = String.Format("Cash Deposits Mobile App: {0}", referenceNo);

@@ -564,6 +564,8 @@ namespace EsoftMobileApi.Models
 
         [Required(ErrorMessage = "Teller Login Code Required")]
         public String TellerLoginCode { get; set; }
+
+        public String DeviceInfo { get; set; }
     }
 
     public class MobileOperatorTrail

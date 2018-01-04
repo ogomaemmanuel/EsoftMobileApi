@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using EsoftMobileApi;
 using EsoftMobileApi.Models;
+using EsoftMobileApi.Services;
 
 namespace ESoft.Web.Services.Registry
 {
@@ -15,10 +16,17 @@ namespace ESoft.Web.Services.Registry
     {
         private readonly Esoft_WebEntities mainDb = new Esoft_WebEntities();
         private String customerNumberMusk = System.Configuration.ConfigurationManager.AppSettings["CustomerNoMask"].ToString();
+        private List<CustomerAccountsView> customerAccounts;
+        private List<tbl_accounttypes> accounttypes;
+        private SavingsProductManager savProductManager;
+        private CustomerManager customerManager;
 
         public CustomerAccountsManager()
         {
-
+            savProductManager = new SavingsProductManager();
+            accounttypes = savProductManager.SavingsAccountTypes(mainDb);
+            customerAccounts = new List<CustomerAccountsView>();
+            customerManager = new CustomerManager();
         }
 
         public List<tbl_CustomerAccounts> GetCustomerSavingsAccounts(String customerNo)
@@ -557,7 +565,172 @@ namespace ESoft.Web.Services.Registry
             return activateStatus;
         }
 
+        public CustomerAccountsView GetAccountByAccountNumber(string accountNumber, bool closureDetails = false)
+        {
+            customerAccounts = new List<CustomerAccountsView>();
 
+
+            var account = mainDb.tbl_CustomerAccounts.Where(x => x.AccountNo == accountNumber).ToList();
+            if (account != null && account.Count != 0)
+            {
+                GetAccountDetails(account.FirstOrDefault().CustomerNo, account, false);
+            }
+
+
+            var customerAccountsDetails = (from accounts in account
+                                           select new CustomerAccountsView
+                                           {
+                                               AccountNo = accounts.AccountNo,
+                                               OpenedBy = accounts.OpenedBy,
+                                               AccountComments = accounts.AccountComments,
+                                               AccountRemarks = accounts.AccountRemarks,
+                                               AccountType = accounts.AccountType,
+                                               Locked = accounts.Locked,
+                                               OpenedDate = accounts.OpenedDate,
+                                               AuthorisedBy = accounts.AuthorisedBy,
+                                               AuthorisedDate = accounts.AuthorisedDate,
+                                               DateClosed = accounts.DateClosed,
+                                               ClosedBy = accounts.ClosedBy,
+                                               CustomerNo = accounts.CustomerNo,
+                                               ReasonClosed = string.Empty
+                                           }).FirstOrDefault();
+
+            if (customerAccountsDetails != null && customerAccountsDetails.AuthorisedBy != null)
+            {
+                var opennedBy = mainDb.tbl_users.FirstOrDefault(x => x.LoginCode == customerAccountsDetails.AuthorisedBy);
+                if (opennedBy != null)
+                {
+                    customerAccountsDetails.AuthorisedBy = ValueConverters.ConvertNullToEmptyString(opennedBy.LoginName);
+                }
+            }
+
+            if (customerAccountsDetails != null && customerAccountsDetails.OpenedBy != null)
+            {
+                var opennedBy = mainDb.tbl_users.FirstOrDefault(x => x.LoginCode == customerAccountsDetails.OpenedBy);
+                if (opennedBy != null)
+                {
+                    customerAccountsDetails.OpenedBy = ValueConverters.ConvertNullToEmptyString(opennedBy.LoginName);
+                }
+            }
+            if (customerAccountsDetails != null)
+            {
+                var accountTypeDetails = accounttypes.FirstOrDefault(x => x.code == customerAccountsDetails.AccountType);
+                if (accountTypeDetails == null) accountTypeDetails = new tbl_accounttypes();
+                customerAccountsDetails.AccountTypeSettings = accountTypeDetails;
+                customerAccountsDetails.GlMemSav = accountTypeDetails.glmemsav;
+                customerAccountsDetails.MinimumBalance = accountTypeDetails.minimum_bal;
+
+                if (closureDetails)
+                {
+                    GetAccountClosureHistory(customerAccountsDetails);
+                    var lastTr = customerAccountsDetails.ClosedAccountDetails.OrderByDescending(x => x.CreateDate).FirstOrDefault();
+                    if (lastTr != null)
+                    {
+                        customerAccountsDetails.ReasonClosed = ValueConverters.ConvertNullToEmptyString(lastTr.PostingDescription);
+                    }
+                }
+            }
+
+            customerAccountsDetails = customerAccountsDetails == null ? new CustomerAccountsView() : customerAccountsDetails;
+            return customerAccountsDetails;
+
+            //  return customerAccounts.FirstOrDefault();
+        }
+
+        private void GetAccountClosureHistory(CustomerAccountsView customerAccountsDetails)
+        {
+            customerAccountsDetails.ClosedAccountDetails = new List<PostingJournalsHeaderViewModel>();
+            var closeDetails = mainDb.tbl_PostingJournals
+                .Where(x => (x.PostingDocid == "ACRS" || x.PostingDocid == "ACLS")
+                && x.AccountNo == customerAccountsDetails.AccountNo)
+                .ToList();
+
+
+            if (closeDetails != null)
+            {
+                foreach (var item in closeDetails)
+                {
+                    PostingJournalsHeaderViewModel lineItem = new PostingJournalsHeaderViewModel();
+
+                    lineItem.PostingDescription = ValueConverters.ConvertNullToEmptyString(item.PostingDescription);
+                    lineItem.PostDate = ValueConverters.ConvertNullToDatetime(item.PostDate);
+                    lineItem.PostedBy = ValueConverters.ConvertNullToEmptyString(item.PostedBy);
+                    lineItem.CreateDate = ValueConverters.ConvertNullToDatetime(item.CreateDate);
+                    lineItem.CreatedBy = ValueConverters.ConvertNullToEmptyString(item.CreatedBy);
+                    lineItem.PaymentMethodName = item.PostingDocid == "ACLS" ? "Closure" : "Rejoin";
+
+                    var opennedBy = mainDb.tbl_users.FirstOrDefault(x => x.LoginCode == lineItem.PostedBy);
+                    if (opennedBy != null)
+                    {
+                        lineItem.PostedByName = ValueConverters.ConvertNullToEmptyString(opennedBy.LoginName);
+                    }
+                    opennedBy = mainDb.tbl_users.FirstOrDefault(x => x.LoginCode == lineItem.CreatedBy);
+                    if (opennedBy != null)
+                    {
+                        lineItem.CreatedByName = ValueConverters.ConvertNullToEmptyString(opennedBy.LoginName);
+                    }
+                    customerAccountsDetails.ClosedAccountDetails.Add(lineItem);
+                }
+            }
+        }
+
+        private void GetAccountDetails(string customerNo, List<tbl_CustomerAccounts> accounts, bool telleringOperations)
+        {
+            if (accounts.Count != 0 && accounts != null)
+            {
+                if (customerAccounts == null) customerAccounts = new List<CustomerAccountsView>();
+
+                var customerDetails = customerManager.GetCustomerDetails(customerNo).FirstOrDefault();
+                if (customerDetails == null)
+                {
+                    customerDetails = new CustomerDetailsView();
+                }
+
+                foreach (var account in accounts)
+                {
+                    var accountTypeDetails = accounttypes.FirstOrDefault(x => x.code == account.AccountType);//.ToList();
+                    if (accountTypeDetails == null) accountTypeDetails = new tbl_accounttypes();
+
+                    if (telleringOperations && ValueConverters.ConvertNullToBool(accountTypeDetails.Disallow_Teller_Transactions))
+                    {
+                        continue;
+                    }
+                    customerAccounts.Add(new CustomerAccountsView
+                    {
+                        tbl_CustomerAccountsID = account.tbl_CustomerAccountsID,
+                        CustomerNo = customerNo,
+                        AccountNo = account.AccountNo,
+                        AccountComments = account.AccountComments,
+                        AccountRemarks = account.AccountRemarks,
+                        AccountType = account.AccountType,
+                        AccountTypeName = accountTypeDetails.category,
+                        GlMemSav = accountTypeDetails.glmemsav,
+                        MinimumBalance = accountTypeDetails.minimum_bal,
+                        OpenedBy = account.OpenedBy,
+                        OpenedDate = account.OpenedDate,
+                        AuthorisedBy = account.AuthorisedBy,
+                        AuthorisedDate = account.AuthorisedDate,
+                        DateClosed = account.DateClosed,
+                        Locked = account.Locked,
+                        CustomerBranch = customerDetails.Branch,
+                        customerDetails =
+                        { new CustomerDetailsView{
+                            CustomerName=customerDetails.CustomerName,
+                            AccountComments= customerDetails.AccountComments,
+                            AccountRemarks = customerDetails.AccountRemarks,
+                            Branch =  customerDetails.Branch,
+                            Locked =  customerDetails.Locked,
+                            CustomerIdNo =  customerDetails.CustomerIdNo,
+                            DateClosed =  customerDetails.DateClosed,
+                            MemberType =  customerDetails.MemberType,
+                            MobileNo   =  customerDetails.MobileNo,
+                            CustomerNo  = customerNo
+                        }},
+                        AccountTypeSettings = accountTypeDetails
+                    });
+                }
+            }
+        }
     }
 
 }

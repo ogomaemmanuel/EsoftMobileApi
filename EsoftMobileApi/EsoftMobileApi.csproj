@@ -510,6 +510,7 @@
     <Compile Include="Services\GlAccountsManager.cs" />
     <Compile Include="Services\InvestmentsCodesManager.cs" />
     <Compile Include="Services\LoanProductsManager.cs" />
+    <Compile Include="Services\SavingsProductManager.cs" />
     <Compile Include="Services\TellerManager.cs" />
     <Compile Include="Services\UserAdministrationManager.cs" />
     <Compile Include="Single_Customer_Status_deposits_Result.cs">

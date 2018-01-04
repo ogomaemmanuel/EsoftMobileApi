@@ -11,6 +11,8 @@ namespace EsoftMobileApi.Services
 {
     public class CustomerManager
     {
+        string customerNoMask = System.Configuration.ConfigurationManager.AppSettings["CustomerNoMask"].ToString();
+
         public List<CustomerBalances> GetCustomerBalances(string customerNo, DateTime endDate, List<CustomerBalances> custBalances)
         {
             custBalances = custBalances ?? new List<CustomerBalances>();
@@ -53,6 +55,45 @@ namespace EsoftMobileApi.Services
                 Utility.WriteErrorLog(ref ex);
             }
             return custBalances;
+        }
+
+        public List<CustomerDetailsView> GetCustomerDetails(string customerNo)
+        {
+            List<CustomerDetailsView> custRecord = null;
+            if (ValueConverters.IsStringEmpty(customerNo))
+            {
+                return custRecord;
+            }
+            customerNo = ValueConverters.PADLeft(Int32.Parse(customerNoMask), customerNo.Trim(), '0');
+
+            try
+            {
+                string sqlCommand = "SELECT SigningInstructions, CustomerNo,coalesce(CustomerIdNo,'') as CustomerIdNo,coalesce(CustomerName,'') as CustomerName,Locked,AccountRemarks,AccountComments,MemberType,Branch," +
+                    " AccountRemarks,AccountComments,DateClosed,coalesce(MobileNo,'') as MobileNo,EmpNumber as EmploymentNo,DateOfBirth,JoiningDate,Coalesce(EmployerCode,'') as EmployerCode," +
+                    " coalesce((select name from BranchSettings where branchcode=tbl_customer.Branch),'') as BranchName, " +
+                    " coalesce((select MembershipName from tbl_MembershipTypes where MembershipCode=tbl_customer.MemberType),'') as MemberTypeName, " +
+                    " coalesce((select DPTNAME from tbl_Departments where DptCode=tbl_customer.EmployerCode),'') as EmployerName " +
+                    " from tbl_customer WHERE CUSTOMERNO ='" + ValueConverters.format_sql_string(customerNo) + "'";
+
+                DbDataReader reader = DbConnector.GetSqlReader(sqlCommand);
+
+                custRecord = Functions.DataReaderMapToList<CustomerDetailsView>(reader);
+
+
+            }
+            catch (Exception ex)
+            {
+                Utility.WriteErrorLog(ref ex);
+            }
+            if (custRecord == null || custRecord.Count < 1)
+            {
+                custRecord = new List<CustomerDetailsView>
+                {
+                    new CustomerDetailsView()
+                };
+                custRecord[0].CustomerName = "Customer Record Not Found ";
+            }
+            return custRecord;
         }
 
     }
