@@ -76,101 +76,101 @@ namespace EsoftMobileApi.Services
                 string m_transactionid, RepaymentView repview, tbl_LoanCodes loanproduct, DateTime m_TransactionDate, string m_Narration,
                 string m_Docid, string m_ReferenceNo, double m_DebitAmount,
                 double m_CreditAmount, string m_BranchCode, string m_GlDebit, string transaction_groupid, string m_LoanReferenceNo,
-                bool raiseDebit, Esoft_WebEntities maindb = null, bool checkOffPosting = false)
+                bool raiseDebit, string tellerLoginCode, Esoft_WebEntities maindb = null, bool checkOffPosting = false)
         {
             string income_Account = string.Empty, accrued_Account = string.Empty;
             if (repview.LoanPrincipal > 0)
             {
                 transactionsEngine.Generate_Loans_Transactions(translist, m_transactionid, repview.CustomerNo, m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo,
-                      0, repview.LoanPrincipal, m_BranchCode, m_GlDebit, loanproduct.PrincipalAccount, repview.ProductCode, 1, transaction_groupid, m_LoanReferenceNo, maindb);
+                      0, repview.LoanPrincipal, m_BranchCode, m_GlDebit, loanproduct.PrincipalAccount, repview.ProductCode, 1, transaction_groupid, m_LoanReferenceNo, tellerLoginCode, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-                        repview.LoanPrincipal, m_BranchCode, loanproduct.PrincipalAccount, m_GlDebit, repview.CustomerNo, String.Empty);
+                        repview.LoanPrincipal, m_BranchCode, loanproduct.PrincipalAccount, m_GlDebit, repview.CustomerNo, tellerLoginCode);
                 if (checkOffPosting)
                 {
                     transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.LoanPrincipal, 0,
-                         m_BranchCode, m_GlDebit, loanproduct.PrincipalAccount, repview.CustomerNo, String.Empty);
+                         m_BranchCode, m_GlDebit, loanproduct.PrincipalAccount, repview.CustomerNo, tellerLoginCode);
                 }
             }
             if (repview.LoanInt > 0)
             {
                 transactionsEngine.Generate_Loans_Transactions(translist, m_transactionid, repview.CustomerNo, m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo,
-                    0, repview.LoanInt, m_BranchCode, m_GlDebit, loanproduct.InterestControlAccount, repview.ProductCode, 2, transaction_groupid, m_LoanReferenceNo, maindb);
+                    0, repview.LoanInt, m_BranchCode, m_GlDebit, loanproduct.InterestControlAccount, repview.ProductCode, 2, transaction_groupid, m_LoanReferenceNo, tellerLoginCode, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-                        repview.LoanInt, m_BranchCode, loanproduct.InterestControlAccount, m_GlDebit, repview.CustomerNo, String.Empty);
+                        repview.LoanInt, m_BranchCode, loanproduct.InterestControlAccount, m_GlDebit, repview.CustomerNo, tellerLoginCode);
 
                 if (checkOffPosting)
                 {
                     transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.LoanInt,
-                        0, m_BranchCode, m_GlDebit, loanproduct.InterestControlAccount, repview.CustomerNo, String.Empty);
+                        0, m_BranchCode, m_GlDebit, loanproduct.InterestControlAccount, repview.CustomerNo, tellerLoginCode);
                 }
                 income_Account = loanproduct.InterestIncomeAccount;
                 accrued_Account = loanproduct.InterestAccruedAccount;
 
                 RaiseIncomeContraEntries(transactionsEngine, translist, m_TransactionDate, m_transactionid, repview.CustomerNo, m_Narration, m_Docid, m_ReferenceNo,
-                    repview.LoanInt, accrued_Account, income_Account, m_BranchCode, repview.ProductCode, checkOffPosting);
+                    repview.LoanInt, accrued_Account, income_Account, m_BranchCode, tellerLoginCode, repview.ProductCode, checkOffPosting);
             }
             if (repview.LoanIns > 0)
             {
                 transactionsEngine.Generate_Loans_Transactions(translist, m_transactionid, repview.CustomerNo, m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo,
-                        0, repview.LoanIns, m_BranchCode, m_GlDebit, loanproduct.InsuranceControlAccount, repview.ProductCode, 3, transaction_groupid, m_LoanReferenceNo, maindb);
+                        0, repview.LoanIns, m_BranchCode, m_GlDebit, loanproduct.InsuranceControlAccount, repview.ProductCode, 3, transaction_groupid, m_LoanReferenceNo, tellerLoginCode, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-                    repview.LoanIns, m_BranchCode, loanproduct.InsuranceControlAccount, m_GlDebit, repview.CustomerNo, String.Empty);
+                    repview.LoanIns, m_BranchCode, loanproduct.InsuranceControlAccount, m_GlDebit, repview.CustomerNo, tellerLoginCode);
                 if (checkOffPosting)
                 {
                     transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.LoanIns,
-                        0, m_BranchCode, m_GlDebit, loanproduct.InsuranceControlAccount, repview.CustomerNo, String.Empty);
+                        0, m_BranchCode, m_GlDebit, loanproduct.InsuranceControlAccount, repview.CustomerNo, tellerLoginCode);
                 }
                 income_Account = loanproduct.InsuranceIncomeAccount;
                 accrued_Account = loanproduct.InsuranceAccruedAccount;
                 RaiseIncomeContraEntries(transactionsEngine, translist, m_TransactionDate, m_transactionid, repview.CustomerNo, m_Narration, m_Docid, m_ReferenceNo,
-                    repview.LoanIns, accrued_Account, income_Account, m_BranchCode, repview.ProductCode, checkOffPosting);
+                    repview.LoanIns, accrued_Account, income_Account, m_BranchCode, tellerLoginCode, repview.ProductCode, checkOffPosting);
             }
             if (repview.LoanApp > 0)
             {
                 transactionsEngine.Generate_Loans_Transactions(translist, m_transactionid, repview.CustomerNo, m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo,
-                        0, repview.LoanApp, m_BranchCode, m_GlDebit, loanproduct.AppraisalFeeControlAccount, repview.ProductCode, 4, transaction_groupid, m_LoanReferenceNo, maindb);
+                        0, repview.LoanApp, m_BranchCode, m_GlDebit, loanproduct.AppraisalFeeControlAccount, repview.ProductCode, 4, transaction_groupid, m_LoanReferenceNo, tellerLoginCode, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-                         repview.LoanApp, m_BranchCode, loanproduct.AppraisalFeeControlAccount, m_GlDebit, repview.CustomerNo, String.Empty);
+                         repview.LoanApp, m_BranchCode, loanproduct.AppraisalFeeControlAccount, m_GlDebit, repview.CustomerNo, tellerLoginCode);
                 if (checkOffPosting)
                 {
                     transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.LoanApp,
-                        0, m_BranchCode, m_GlDebit, loanproduct.AppraisalFeeControlAccount, repview.CustomerNo, String.Empty);
+                        0, m_BranchCode, m_GlDebit, loanproduct.AppraisalFeeControlAccount, repview.CustomerNo, tellerLoginCode);
                 }
 
                 income_Account = loanproduct.AppraisalFeeIncomeAccount;
                 accrued_Account = loanproduct.AppraisalFeeAccruedAccount;
                 RaiseIncomeContraEntries(transactionsEngine, translist, m_TransactionDate, m_transactionid, repview.CustomerNo, m_Narration, m_Docid, m_ReferenceNo,
-                         repview.LoanApp, accrued_Account, income_Account, m_BranchCode, repview.ProductCode, checkOffPosting);
+                         repview.LoanApp, accrued_Account, income_Account, m_BranchCode, tellerLoginCode, repview.ProductCode, checkOffPosting);
             }
             if (repview.LoanPen > 0)
             {
                 transactionsEngine.Generate_Loans_Transactions(translist, m_transactionid, repview.CustomerNo, m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo,
-                        0, repview.LoanPen, m_BranchCode, m_GlDebit, loanproduct.PenaltyControlAccount, repview.ProductCode, 4, transaction_groupid, m_LoanReferenceNo, maindb);
+                        0, repview.LoanPen, m_BranchCode, m_GlDebit, loanproduct.PenaltyControlAccount, repview.ProductCode, 4, transaction_groupid, m_LoanReferenceNo, tellerLoginCode, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-              repview.LoanPen, m_BranchCode, loanproduct.PenaltyControlAccount, m_GlDebit, repview.CustomerNo, String.Empty);
+              repview.LoanPen, m_BranchCode, loanproduct.PenaltyControlAccount, m_GlDebit, repview.CustomerNo, tellerLoginCode);
                 if (checkOffPosting)
                 {
                     transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.LoanPen,
-                        0, m_BranchCode, m_GlDebit, loanproduct.PenaltyControlAccount, repview.CustomerNo, String.Empty);
+                        0, m_BranchCode, m_GlDebit, loanproduct.PenaltyControlAccount, repview.CustomerNo, tellerLoginCode);
                 }
 
                 income_Account = loanproduct.PenaltyIncomeAccount;
                 accrued_Account = loanproduct.PenaltyAccruedAccount;
                 RaiseIncomeContraEntries(transactionsEngine, translist, m_TransactionDate, m_transactionid, repview.CustomerNo, m_Narration, m_Docid, m_ReferenceNo,
-                    repview.LoanPen, accrued_Account, income_Account, m_BranchCode, repview.ProductCode, checkOffPosting);
+                    repview.LoanPen, accrued_Account, income_Account, m_BranchCode, tellerLoginCode, repview.ProductCode, checkOffPosting);
             }
             if (repview.loan_Levy > 0)
             {
                 transactionsEngine.Generate_Loans_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, "Levy " + m_Narration, m_Docid, m_ReferenceNo,
-                     repview.loan_Levy, repview.loan_Levy, m_BranchCode, m_GlDebit, loanproduct.CashPayment_GlAccount, repview.ProductCode, 1, transaction_groupid, m_LoanReferenceNo, maindb);
+                     repview.loan_Levy, repview.loan_Levy, m_BranchCode, m_GlDebit, loanproduct.CashPayment_GlAccount, repview.ProductCode, 1, transaction_groupid, m_LoanReferenceNo, tellerLoginCode, maindb);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, repview.CustomerNo, m_TransactionDate, "Levy " + m_Narration, m_Docid, m_ReferenceNo, 0,
-                     repview.loan_Levy, m_BranchCode, loanproduct.CashPayment_GlAccount, m_GlDebit, repview.CustomerNo, String.Empty);
+                     repview.loan_Levy, m_BranchCode, loanproduct.CashPayment_GlAccount, m_GlDebit, repview.CustomerNo, tellerLoginCode);
             }
             if (raiseDebit == true && checkOffPosting == false)
             {
@@ -178,19 +178,19 @@ namespace EsoftMobileApi.Services
                     ValueConverters.ConvertNullToDouble(repview.LoanPen) + ValueConverters.ConvertNullToDouble(repview.LoanInt) + ValueConverters.ConvertNullToDouble(repview.LoanPrincipal);
 
                 transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? repview.ProductCode : repview.CustomerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, repview.Amount,
-                                    0, m_BranchCode, m_GlDebit, "Product-Rep", repview.CustomerNo, String.Empty);
+                                    0, m_BranchCode, m_GlDebit, "Product-Rep", repview.CustomerNo, tellerLoginCode);
             }
             else { /* Raise Final Debit in Calling Module*/}
             return translist;
         }
 
         public void RaiseIncomeContraEntries(PostTransactions transactionsEngine, List<PostTransactionsViewModel> translist, DateTime m_TransactionDate, string m_transactionid, string customerNo,
-            string m_Narration, string m_Docid, string m_ReferenceNo, double amount, string m_GlDebit, string m_GlCredit, string m_BranchCode, string productCode = "", bool checkOffPosting = false)
+            string m_Narration, string m_Docid, string m_ReferenceNo, double amount, string m_GlDebit, string m_GlCredit, string m_BranchCode, string tellerLoginCode, string productCode = "", bool checkOffPosting = false)
         {
             transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? productCode : customerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, 0,
-             amount, m_BranchCode, m_GlCredit, m_GlDebit, customerNo, String.Empty);
+             amount, m_BranchCode, m_GlCredit, m_GlDebit, customerNo, tellerLoginCode);
             transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, (checkOffPosting ? productCode : customerNo), m_TransactionDate, m_Narration, m_Docid, m_ReferenceNo, amount,
-             0, m_BranchCode, m_GlDebit, m_GlCredit, customerNo, String.Empty);
+             0, m_BranchCode, m_GlDebit, m_GlCredit, customerNo, tellerLoginCode);
         }
     }
 }

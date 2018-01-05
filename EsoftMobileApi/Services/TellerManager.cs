@@ -148,16 +148,13 @@ namespace EsoftMobileApi.Services
                         var loanProduct = loanCodes.FirstOrDefault(x => x.LoanCode == repayment.ProductCode);
                         loanProductsMgr.Distribute_LoanRepayment(repayment, customerBalances, loanProduct, true);
                         glaccount_cr = loanProduct.PrincipalAccount;
+
                         loanProductsMgr.GenerateLoanRepaymentStatements(transactionsEngine, translist, m_transactionid, repayment, loanProduct, trdatenow, trdescpt, docid, referenceNo, 0, 0,
-                            income_branch, tellerAccount, "1", "", false, db);
+                            income_branch, tellerAccount, "1", "", false, tellerLoginCode, db);
 
                         // final Debit to Teller Account
                         transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, custDetails.CustomerNo, trdatenow, trdescpt, docid, referenceNo,
                             repayment.Amount, 0, income_branch, tellerAccount, glaccount_cr, custDetails.CustomerNo, tellerLoginCode);
-
-                        //transactionsEngine.Generate_Ledger_Transactions(translist, m_transactionid, custDetails.CustomerNo, trdatenow, trdescpt, docid, referenceNo,
-                        //  0, repayment.Amount, income_branch, glaccount_cr, tellerAccount, custDetails.CustomerNo, tellerLoginCode);
-
 
 
                         LogMobileTrail(new MobileOperatorTrail()
@@ -187,7 +184,8 @@ namespace EsoftMobileApi.Services
             {
                 transactionPosted = true;
             }
-            else {
+            else
+            {
                 _validationDictionary.AddError("", result);
             }
 
@@ -205,7 +203,7 @@ namespace EsoftMobileApi.Services
                         trail.Ledger.Format_Sql_String() + "','" +
                         trail.CustomerNo.Format_Sql_String() + "','" +
                         trail.AccountNo.Format_Sql_String() + "','" +
-                        trail.TransactionDate.ConvertNullToDatetime() + "','" +
+                       ValueConverters.FormatSqlDate(trail.TransactionDate) + "','" +
                         trail.Description.Format_Sql_String() + "','" +
                         ValueConverters.ConvertNullToDecimal(trail.Amount) + "','" +
                         trail.DeviceInfo.Format_Sql_String() + "','" +

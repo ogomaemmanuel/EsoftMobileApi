@@ -135,7 +135,7 @@ namespace EsoftMobileApi.Services.common
                 Narration = m_Narration,
                 Docid = m_Docid,
                 ReferenceNo = m_ReferenceNo,
-                LoginCode = loginCode ?? String.Empty,
+                LoginCode = loginCode,
                 Machine = "",
                 DebitAmount = m_DebitAmount,
                 CreditAmount = m_CreditAmount,
@@ -158,7 +158,7 @@ namespace EsoftMobileApi.Services.common
         public List<PostTransactionsViewModel> Generate_Ledger_Transactions
             (List<PostTransactionsViewModel> transList,
              string m_current_posting_reference, string m_AccountNo, DateTime m_TransactionDate, string m_Narration, string m_Docid, string m_ReferenceNo, double m_DebitAmount,
-        double m_CreditAmount, string m_BranchCode, string m_GlAccount, string m_GlContra, string m_CustomerNo,string loginCode)
+        double m_CreditAmount, string m_BranchCode, string m_GlAccount, string m_GlContra, string m_CustomerNo, string loginCode)
         {
             if (m_DebitAmount < 0.00)
             {
@@ -204,7 +204,7 @@ namespace EsoftMobileApi.Services.common
         public List<PostTransactionsViewModel> Generate_Shares_Transactions
             (List<PostTransactionsViewModel> transList, string m_current_posting_reference, string m_AccountNo, DateTime m_TransactionDate, string m_Narration,
             string m_Docid, string m_ReferenceNo, double m_DebitAmount,
-    double m_CreditAmount, string m_BranchCode, string m_GlDebit, string m_GlCredit, string m_productCode,string loginCode)
+    double m_CreditAmount, string m_BranchCode, string m_GlDebit, string m_GlCredit, string m_productCode, string loginCode)
         {
             if (m_DebitAmount < 0.00)
             {
@@ -246,7 +246,7 @@ namespace EsoftMobileApi.Services.common
            (List<PostTransactionsViewModel> transList, string m_current_posting_reference, string m_AccountNo, DateTime m_TransactionDate, string m_Narration,
            string m_Docid, string m_ReferenceNo, double m_DebitAmount,
    double m_CreditAmount, string m_BranchCode, string m_GlDebit, string m_GlCredit, string m_productCode, int loan_section, string transaction_groupid, string m_LoanReferenceNo,
-            Esoft_WebEntities maindb = null)
+            string tellerLoginCode, Esoft_WebEntities maindb = null)
         {
             if (m_DebitAmount < 0.00)
             {
@@ -280,7 +280,7 @@ namespace EsoftMobileApi.Services.common
                 Narration = m_Narration,
                 Docid = m_Docid,
                 ReferenceNo = m_ReferenceNo,
-                LoginCode = "",
+                LoginCode = tellerLoginCode,
                 Machine = "",
                 DebitAmount = m_DebitAmount,
                 CreditAmount = m_CreditAmount,
@@ -382,7 +382,8 @@ namespace EsoftMobileApi.Services.common
 
             string mainDbConnectionstring = DbConnector.MainDbConnectionString();
             DateTime serverDate = DateTime.Now;
-            string userLoginCode = loginCode;
+            string userLoginCode = String.Empty;
+
             //string userMachineName = userMachineName;
 
             using (SqlConnection sqlConnection = new SqlConnection(mainDbConnectionstring))
@@ -398,6 +399,7 @@ namespace EsoftMobileApi.Services.common
                     {
                         foreach (PostTransactionsViewModel tr in transactionList)
                         {
+                            userLoginCode = tr.LoginCode ?? string.Empty;
                             //Parallel.ForEach(transactionList, tr =>
                             //{
                             tr.AuditTime = serverDate;
