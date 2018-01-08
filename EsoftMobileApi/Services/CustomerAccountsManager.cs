@@ -458,7 +458,7 @@ namespace ESoft.Web.Services.Registry
 
             try
             {
-                string insertMobileUser = "INSERT INTO tbl_MobileUsers(CustomerName,MobileNo,Pin,tbl_CustomerId,CustomerNo,Email,IdNo,Enabled) " +
+                string insertMobileUser = "INSERT INTO tbl_MobileUsers(CustomerName,MobileNo,Pin,tbl_CustomerId,CustomerNo,Email,IdNo,DateCreated,Enabled) " +
                      " VALUES('" + user.CustomerName.Format_Sql_String() + "','" +
                      user.MobileNo.Format_Sql_String() + "','" +
                      user.Pin + "','" +
@@ -466,6 +466,7 @@ namespace ESoft.Web.Services.Registry
                      user.CustomerNo.Format_Sql_String() + "','" +
                      user.Email.Format_Sql_String() + "','" +
                      user.IdNo.Format_Sql_String() + "','" +
+                     ValueConverters.FormatSqlDate(DateTime.Now)+ "','" +
                      ValueConverters.ConvertNullToBool(user.Enabled) + "'); ";
 
                 int result = mainDb.Database.ExecuteSqlCommand(insertMobileUser);
